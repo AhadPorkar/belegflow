@@ -17,6 +17,9 @@ async function api(page,path,method='GET',body) {
 test('English default, German switch, mobile layout and dark theme',async({page})=>{
  await login(page);
  await expect(page.locator('html')).toHaveAttribute('lang','en');
+ await page.getByRole('button',{name:'Appearance',exact:true}).click();
+ await expect(page.locator('html')).toHaveAttribute('data-theme','dark');
+ await page.getByRole('button',{name:'Appearance',exact:true}).click();
  await page.getByRole('button',{name:'DE',exact:true}).click();
  await expect(page.locator('html')).toHaveAttribute('lang','de');
  await page.getByRole('button',{name:'EN',exact:true}).click();

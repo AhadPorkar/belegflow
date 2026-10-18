@@ -26,6 +26,7 @@ export class WorkspaceStore {
     private listTicket = 0;
     private searchTimer: ReturnType<typeof setTimeout> | undefined;
     private toastTimer: ReturnType<typeof setTimeout> | undefined;
+    private auditLoading = false;
     constructor(api: Api) { this.api = api; }
     getSnapshot = (): State => this.state;
     subscribe = (listener: () => void): (() => void) => { this.listeners.add(listener); return () => this.listeners.delete(listener); };
@@ -38,10 +39,25 @@ export class WorkspaceStore {
         for (const listener of this.listeners)
             listener();
     }
+    /** Invalidates pending responses and timers when a store is no longer mounted. */
+    dispose(): void {
+        this.authTicket++; this.listTicket++; this.selectionTicket++;
+        if (this.searchTimer) clearTimeout(this.searchTimer);
+        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.listeners.clear();
+    }
+    private privateState(): Partial<State> {
+        return { me: null, detail: null, selectedId: null, invoices: [], total: 0,
+            catalog: emptyCatalog, summary: emptySummary, notifications: [], exports: [],
+            audit: [], auditNext: 0, dialog: null, dialogFile: null, toast: null, loading: false };
+    }
     t(key: string, variables: Record<string, string | number> = {}): string { return translate(this.state.locale, key, variables); }
     private fail(error: unknown): void {
         const code = error instanceof ApiError ? error.code : error instanceof RangeError ? 'INVALID_INPUT' : 'UNEXPECTED_ERROR';
-        this.patch({ error: code, ...(['AUTH_REQUIRED', 'SESSION_REVOKED'].includes(code) ? { me: null, dialog: null } : {}) });
+        if (['AUTH_REQUIRED', 'SESSION_REVOKED'].includes(code)) {
+            this.authTicket++; this.listTicket++; this.selectionTicket++;
+            this.patch({ ...this.privateState(), error: code, busy: false });
+        } else this.patch({ error: code });
     }
     private toast(key = 'saved'): void { if (this.toastTimer)
         clearTimeout(this.toastTimer); this.patch({ toast: key }); this.toastTimer = setTimeout(() => this.patch({ toast: null }), 5000); }
@@ -72,32 +88,34 @@ export class WorkspaceStore {
     async login(email: string, password: string): Promise<void> {
         if (this.state.busy)
             return;
-        this.authTicket++;
+        const ticket = ++this.authTicket;
         this.listTicket++;
         this.selectionTicket++;
-        this.patch({ busy: true, error: null, detail: null, invoices: [] });
+        this.patch({ ...this.privateState(), busy: true, error: null });
         try {
             const me = await this.api.login(email, password);
+            if (ticket !== this.authTicket) return;
             this.patch({ me, locale: me.locale === 'de' ? 'de' : 'en', dialog: null, view: 'inbox', query: '', stage: '', page: 0, selectedId: null });
             await this.loadAll();
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket) this.fail(e);
         }
         finally {
-            this.patch({ busy: false, ready: true });
+            if (ticket === this.authTicket) this.patch({ busy: false, ready: true });
         }
     }
     async loginDemo(email: string): Promise<void> { if (this.state.demo)
         await this.login(email, 'BelegFlow-Demo-2026!'); }
-    async logout(): Promise<void> { this.authTicket++; this.listTicket++; this.selectionTicket++; if (this.searchTimer)
-        clearTimeout(this.searchTimer); try {
-        await this.api.logout();
-        this.patch({ me: null, detail: null, invoices: [], catalog: emptyCatalog, summary: emptySummary, notifications: [], exports: [], audit: [], dialog: null });
+    async logout(): Promise<void> {
+        const ticket = ++this.authTicket;
+        this.listTicket++; this.selectionTicket++;
+        if (this.searchTimer) clearTimeout(this.searchTimer);
+        if (this.toastTimer) clearTimeout(this.toastTimer);
+        this.patch({ ...this.privateState(), busy: false, ready: true, error: null });
+        try { await this.api.logout(); }
+        catch (e) { if (ticket === this.authTicket) this.fail(e); }
     }
-    catch (e) {
-        this.fail(e);
-    } }
     async loadAll(): Promise<void> {
         if (!this.state.me)
             return;
@@ -116,6 +134,8 @@ export class WorkspaceStore {
         this.fail(e);
     } }
     async navigate(view: View): Promise<void> {
+        this.listTicket++; this.selectionTicket++;
+        if (this.searchTimer) clearTimeout(this.searchTimer);
         this.closeDialog();
         this.patch({ view, page: 0, query: '', stage: view === 'approvals' ? 'READY_FOR_APPROVAL' : '', error: null, mobilePane: 'queue' });
         try {
@@ -205,20 +225,23 @@ export class WorkspaceStore {
     private async mutate(task: () => Promise<void>, message = 'saved'): Promise<boolean> {
         if (this.state.busy)
             return false;
+        const ticket = this.authTicket;
         this.patch({ busy: true, error: null });
         try {
             await task();
+            if (ticket !== this.authTicket || !this.state.me) return false;
             this.closeDialog();
             await this.loadAll();
+            if (ticket !== this.authTicket || !this.state.me) return false;
             this.toast(message);
             return true;
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket) this.fail(e);
             return false;
         }
         finally {
-            this.patch({ busy: false });
+            if (ticket === this.authTicket) this.patch({ busy: false });
         }
     }
     async command(action: string): Promise<void> {
@@ -239,6 +262,7 @@ export class WorkspaceStore {
         return false; return this.mutate(async () => { await this.api.send('POST', '/invoices/' + d.id + '/comments', { body: text }); }); }
     async submitDialog(form: HTMLFormElement): Promise<void> {
         const d = this.state.dialog;
+        const ticket = this.authTicket;
         if (!d)
             return;
         const fd = new FormData(form);
@@ -258,6 +282,7 @@ export class WorkspaceStore {
                         id: string;
                         reused: boolean;
                     }>('/invoices/import', fd);
+                    if (ticket !== this.authTicket) return;
                     this.patch({ selectedId: result.id, view: 'inbox', query: '', stage: '', page: 0, mobilePane: 'document' });
                     message = result.reused ? 'reused' : 'imported';
                     break;
@@ -339,23 +364,28 @@ export class WorkspaceStore {
     async saveRules(threshold: string): Promise<void> { await this.mutate(async () => { await this.api.send('PUT', '/settings/rules', { threshold }); }); }
     async revoke(id: string): Promise<void> { await this.mutate(async () => { await this.api.send('DELETE', '/delegations/' + id); }); }
     async runReminders(): Promise<void> { await this.mutate(async () => { await this.api.send('POST', '/notifications/run'); }); }
-    async markRead(id: string): Promise<void> { try {
-        await this.api.send('POST', '/notifications/' + id + '/read');
-        this.patch({ notifications: await this.api.get<Notification[]>('/notifications') });
+    async markRead(id: string): Promise<void> {
+        const ticket = this.authTicket;
+        try {
+            await this.api.send('POST', '/notifications/' + id + '/read');
+            if (ticket !== this.authTicket || !this.state.me) return;
+            const notifications = await this.api.get<Notification[]>('/notifications');
+            if (ticket === this.authTicket && this.state.me) this.patch({ notifications });
+        } catch (e) { if (ticket === this.authTicket) this.fail(e); }
     }
-    catch (e) {
-        this.fail(e);
-    } }
-    async earlierAudit(): Promise<void> { try {
-        const r = await this.api.get<{
-            items: Audit[];
-            next: number;
-        }>('/audit?before=' + this.state.auditNext);
-        this.patch({ audit: [...this.state.audit, ...r.items], auditNext: r.next });
+    async earlierAudit(): Promise<void> {
+        if (this.auditLoading || !this.state.me || this.state.view !== 'audit') return;
+        this.auditLoading = true;
+        const ticket = this.authTicket;
+        const cursor = this.state.auditNext;
+        try {
+            const r = await this.api.get<{ items: Audit[]; next: number }>('/audit?before=' + cursor);
+            if (ticket !== this.authTicket || !this.state.me || this.state.view !== 'audit') return;
+            const existing = new Set(this.state.audit.map(event => event.id));
+            this.patch({ audit: [...this.state.audit, ...r.items.filter(event => !existing.has(event.id))], auditNext: r.next });
+        } catch (e) { if (ticket === this.authTicket) this.fail(e); }
+        finally { this.auditLoading = false; }
     }
-    catch (e) {
-        this.fail(e);
-    } }
     async download(path: string, name?: string): Promise<void> { try {
         await this.api.download(path, name);
     }

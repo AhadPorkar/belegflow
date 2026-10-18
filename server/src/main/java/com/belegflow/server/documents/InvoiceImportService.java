@@ -70,8 +70,8 @@ import java.math.BigDecimal;
             number=Sql.text(m.get("invoice_number"),120,true);
             description=Sql.text(m.get("description"),2000,false);
             currency=Sql.text(m.getOrDefault("currency","EUR"),3,true);
-            issue=LocalDate.parse(m.get("issue_date"));
-            due=LocalDate.parse(m.get("due_date"));
+            issue=requiredDate(m.get("issue_date"));
+            due=requiredDate(m.get("due_date"));
             net=MoneyRules.amount(m.get("net"));
             tax=MoneyRules.amount(m.get("tax"));
             gross=MoneyRules.amount(m.get("gross"));
@@ -101,6 +101,11 @@ import java.math.BigDecimal;
         audit.append(a,id,checks.isEmpty()?"BASIC_CHECKS_PASSED":"BASIC_CHECKS_FAILED",String.join(";",checks));
         if(duplicate)audit.append(a,id,"POSSIBLE_DUPLICATE",key);
         return new Result(id,false,duplicate);
+    }
+    private LocalDate requiredDate(String value) {
+        String text=Sql.text(value,10,true);
+        try { return LocalDate.parse(text); }
+        catch(java.time.format.DateTimeParseException e) { throw new BusinessException("INVALID_INPUT"); }
     }
     private UUID optionalUuid(String s) {
         return s==null||s.isBlank()?null:UUID.fromString(s);

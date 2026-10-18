@@ -203,6 +203,7 @@ public final class DomainChecks {
         c.add(new Check("XML: credit note unsupported",()->error("UNSUPPORTED_INVOICE_TYPE",()->new InvoiceXmlParser().parse(bytes(fixture("invoice-ubl.xml").replace(">380<",">381<"))))));
         c.add(new Check("XML: prepayment unsupported",()->error("UNSUPPORTED_PREPAYMENT",()->new InvoiceXmlParser().parse(bytes(fixture("invoice-ubl.xml").replace("<cbc:PayableAmount currencyID=\"EUR\">1190.00","<cbc:PayableAmount currencyID=\"EUR\">1000.00"))))));
         c.add(new Check("XML: decimal scale bounded",()->error("INVALID_AMOUNT",()->new InvoiceXmlParser().parse(bytes(fixture("invoice-ubl.xml").replace("190.00","190.001"))))));
+        c.addAll(PolicyMatrixChecks.cases());
         return List.copyOf(c);
     }
     public static void main(String[] args) {

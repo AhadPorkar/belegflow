@@ -4024,6 +4024,8 @@ class HttpApi {
         catch {
             throw new ApiError('NETWORK_ERROR');
         }
+        if (response.status === 401)
+            this.token = null;
         const text = await response.text();
         let result;
         try {
@@ -4059,8 +4061,15 @@ class HttpApi {
         catch {
             throw new ApiError('NETWORK_ERROR');
         }
-        if (!r.ok)
-            throw new ApiError(r.status === 403 ? 'FORBIDDEN' : 'NOT_FOUND', r.status);
+        if (!r.ok) {
+            if (r.status === 401) {
+                this.token = null;
+                throw new ApiError('AUTH_REQUIRED', 401);
+            }
+            const fallback = r.status === 403 ? 'FORBIDDEN' : r.status === 404 ? 'NOT_FOUND' : 'UNEXPECTED_ERROR';
+            const error = await r.json().catch(() => null);
+            throw new ApiError(error?.code ?? fallback, r.status);
+        }
         const disposition = r.headers.get('Content-Disposition') ?? '';
         const encoded = /filename\*=UTF-8''([^;]+)/i.exec(disposition)?.[1];
         const plain = /filename="([^"]+)"/i.exec(disposition)?.[1];
@@ -5867,6 +5876,7 @@ class WorkspaceStore {
     listTicket = 0;
     searchTimer;
     toastTimer;
+    auditLoading = false;
     constructor(api) { this.api = api; }
     getSnapshot = () => this.state;
     subscribe = (listener) => { this.listeners.add(listener); return () => this.listeners.delete(listener); };
@@ -5879,10 +5889,33 @@ class WorkspaceStore {
         for (const listener of this.listeners)
             listener();
     }
+    /** Invalidates pending responses and timers when a store is no longer mounted. */
+    dispose() {
+        this.authTicket++;
+        this.listTicket++;
+        this.selectionTicket++;
+        if (this.searchTimer)
+            clearTimeout(this.searchTimer);
+        if (this.toastTimer)
+            clearTimeout(this.toastTimer);
+        this.listeners.clear();
+    }
+    privateState() {
+        return { me: null, detail: null, selectedId: null, invoices: [], total: 0,
+            catalog: emptyCatalog, summary: emptySummary, notifications: [], exports: [],
+            audit: [], auditNext: 0, dialog: null, dialogFile: null, toast: null, loading: false };
+    }
     t(key, variables = {}) { return (0, i18n_ts_1.translate)(this.state.locale, key, variables); }
     fail(error) {
         const code = error instanceof api_ts_1.ApiError ? error.code : error instanceof RangeError ? 'INVALID_INPUT' : 'UNEXPECTED_ERROR';
-        this.patch({ error: code, ...(['AUTH_REQUIRED', 'SESSION_REVOKED'].includes(code) ? { me: null, dialog: null } : {}) });
+        if (['AUTH_REQUIRED', 'SESSION_REVOKED'].includes(code)) {
+            this.authTicket++;
+            this.listTicket++;
+            this.selectionTicket++;
+            this.patch({ ...this.privateState(), error: code, busy: false });
+        }
+        else
+            this.patch({ error: code });
     }
     toast(key = 'saved') {
         if (this.toastTimer)
@@ -5914,20 +5947,24 @@ class WorkspaceStore {
     async login(email, password) {
         if (this.state.busy)
             return;
-        this.authTicket++;
+        const ticket = ++this.authTicket;
         this.listTicket++;
         this.selectionTicket++;
-        this.patch({ busy: true, error: null, detail: null, invoices: [] });
+        this.patch({ ...this.privateState(), busy: true, error: null });
         try {
             const me = await this.api.login(email, password);
+            if (ticket !== this.authTicket)
+                return;
             this.patch({ me, locale: me.locale === 'de' ? 'de' : 'en', dialog: null, view: 'inbox', query: '', stage: '', page: 0, selectedId: null });
             await this.loadAll();
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket)
+                this.fail(e);
         }
         finally {
-            this.patch({ busy: false, ready: true });
+            if (ticket === this.authTicket)
+                this.patch({ busy: false, ready: true });
         }
     }
     async loginDemo(email) {
@@ -5935,17 +5972,20 @@ class WorkspaceStore {
             await this.login(email, 'BelegFlow-Demo-2026!');
     }
     async logout() {
-        this.authTicket++;
+        const ticket = ++this.authTicket;
         this.listTicket++;
         this.selectionTicket++;
         if (this.searchTimer)
             clearTimeout(this.searchTimer);
+        if (this.toastTimer)
+            clearTimeout(this.toastTimer);
+        this.patch({ ...this.privateState(), busy: false, ready: true, error: null });
         try {
             await this.api.logout();
-            this.patch({ me: null, detail: null, invoices: [], catalog: emptyCatalog, summary: emptySummary, notifications: [], exports: [], audit: [], dialog: null });
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket)
+                this.fail(e);
         }
     }
     async loadAll() {
@@ -5969,6 +6009,10 @@ class WorkspaceStore {
         }
     }
     async navigate(view) {
+        this.listTicket++;
+        this.selectionTicket++;
+        if (this.searchTimer)
+            clearTimeout(this.searchTimer);
         this.closeDialog();
         this.patch({ view, page: 0, query: '', stage: view === 'approvals' ? 'READY_FOR_APPROVAL' : '', error: null, mobilePane: 'queue' });
         try {
@@ -6090,20 +6134,27 @@ class WorkspaceStore {
     async mutate(task, message = 'saved') {
         if (this.state.busy)
             return false;
+        const ticket = this.authTicket;
         this.patch({ busy: true, error: null });
         try {
             await task();
+            if (ticket !== this.authTicket || !this.state.me)
+                return false;
             this.closeDialog();
             await this.loadAll();
+            if (ticket !== this.authTicket || !this.state.me)
+                return false;
             this.toast(message);
             return true;
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket)
+                this.fail(e);
             return false;
         }
         finally {
-            this.patch({ busy: false });
+            if (ticket === this.authTicket)
+                this.patch({ busy: false });
         }
     }
     async command(action) {
@@ -6128,6 +6179,7 @@ class WorkspaceStore {
     }
     async submitDialog(form) {
         const d = this.state.dialog;
+        const ticket = this.authTicket;
         if (!d)
             return;
         const fd = new FormData(form);
@@ -6144,6 +6196,8 @@ class WorkspaceStore {
                         throw new api_ts_1.ApiError('INVALID_FILE');
                     fd.set('file', file);
                     const result = await this.api.upload('/invoices/import', fd);
+                    if (ticket !== this.authTicket)
+                        return;
                     this.patch({ selectedId: result.id, view: 'inbox', query: '', stage: '', page: 0, mobilePane: 'document' });
                     message = result.reused ? 'reused' : 'imported';
                     break;
@@ -6226,21 +6280,39 @@ class WorkspaceStore {
     async revoke(id) { await this.mutate(async () => { await this.api.send('DELETE', '/delegations/' + id); }); }
     async runReminders() { await this.mutate(async () => { await this.api.send('POST', '/notifications/run'); }); }
     async markRead(id) {
+        const ticket = this.authTicket;
         try {
             await this.api.send('POST', '/notifications/' + id + '/read');
-            this.patch({ notifications: await this.api.get('/notifications') });
+            if (ticket !== this.authTicket || !this.state.me)
+                return;
+            const notifications = await this.api.get('/notifications');
+            if (ticket === this.authTicket && this.state.me)
+                this.patch({ notifications });
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket)
+                this.fail(e);
         }
     }
     async earlierAudit() {
+        if (this.auditLoading || !this.state.me || this.state.view !== 'audit')
+            return;
+        this.auditLoading = true;
+        const ticket = this.authTicket;
+        const cursor = this.state.auditNext;
         try {
-            const r = await this.api.get('/audit?before=' + this.state.auditNext);
-            this.patch({ audit: [...this.state.audit, ...r.items], auditNext: r.next });
+            const r = await this.api.get('/audit?before=' + cursor);
+            if (ticket !== this.authTicket || !this.state.me || this.state.view !== 'audit')
+                return;
+            const existing = new Set(this.state.audit.map(event => event.id));
+            this.patch({ audit: [...this.state.audit, ...r.items.filter(event => !existing.has(event.id))], auditNext: r.next });
         }
         catch (e) {
-            this.fail(e);
+            if (ticket === this.authTicket)
+                this.fail(e);
+        }
+        finally {
+            this.auditLoading = false;
         }
     }
     async download(path, name) {

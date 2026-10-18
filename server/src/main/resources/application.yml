@@ -16,8 +16,10 @@ spring:
       max-file-size: 10MB
       max-request-size: 11MB
   jackson:
-    serialization:
-      write-dates-as-timestamps: false
+    # Jackson 3 moved date features out of SerializationFeature.
+    datatype:
+      datetime:
+        write-dates-as-timestamps: false
 server:
   port: ${PORT:8080}
   shutdown: graceful
@@ -43,6 +45,7 @@ management:
       show-details: never
 bf:
   demo-enabled: ${BF_DEMO:false}
+  reminder-initial-delay-ms: ${BF_REMINDER_INITIAL_DELAY_MS:30000}
   reminder-delay-ms: ${BF_REMINDER_DELAY_MS:900000}
   bootstrap-email: ${BF_BOOTSTRAP_EMAIL:}
   bootstrap-password: ${BF_BOOTSTRAP_PASSWORD:}

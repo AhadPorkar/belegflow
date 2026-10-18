@@ -1,0 +1,619 @@
+{
+  "release": "0.2.0",
+  "declared": {
+    "domain": 306,
+    "server_unit_configuration": 132,
+    "postgres_integration": 47,
+    "frontend_core": 92,
+    "react_component": 132,
+    "production_e2e": 14
+  },
+  "locally_executed": {
+    "domain": 306,
+    "frontend_core": 92,
+    "compatibility_browser": 17,
+    "report_gate_unit": 9
+  },
+  "backend_files": [
+    {
+      "file": "server/src/test/java/com/belegflow/server/AdapterTest.java",
+      "cases": 12,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/ConcurrencyIntegrationTest.java",
+      "cases": 3,
+      "integration": true
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/IntegrationTest.java",
+      "cases": 15,
+      "integration": true
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java",
+      "cases": 29,
+      "integration": true
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/audit/AuditModuleTest.java",
+      "cases": 4,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/bootstrap/BootstrapModuleTest.java",
+      "cases": 4,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/catalog/CatalogModuleTest.java",
+      "cases": 17,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/config/JacksonConfigurationTest.java",
+      "cases": 4,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/documents/DocumentModuleTest.java",
+      "cases": 11,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/documents/ImportModuleTest.java",
+      "cases": 8,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/exports/ExportModuleTest.java",
+      "cases": 10,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/identity/IdentityModuleTest.java",
+      "cases": 14,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/identity/LoginRateLimitFilterTest.java",
+      "cases": 4,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/invoices/InvoiceModuleTest.java",
+      "cases": 21,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/invoices/InvoiceRepositoryTest.java",
+      "cases": 6,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/notifications/NotificationModuleTest.java",
+      "cases": 9,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/shared/SharedModuleTest.java",
+      "cases": 8,
+      "integration": false
+    }
+  ],
+  "frontend_files": [
+    {
+      "file": "frontend/tests/components/accounting-audit.test.jsx",
+      "cases": 9,
+      "names": [
+        {
+          "name": "'explains the export boundary and empty state (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'opens bulk export when approved invoices exist'",
+          "cases": 1
+        },
+        {
+          "name": "'disables bulk export during an in-flight command'",
+          "cases": 1
+        },
+        {
+          "name": "'downloads a stored package using its immutable id'",
+          "cases": 1
+        },
+        {
+          "name": "'renders audit history and links to the source invoice (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'does not offer a pagination request without a cursor'",
+          "cases": 1
+        },
+        {
+          "name": "'renders non-invoice audit events without a fake link'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/components/catalog-settings.test.jsx",
+      "cases": 21,
+      "names": [
+        {
+          "name": "'lists and edits a supplier (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'opens supplier creation'",
+          "cases": 1
+        },
+        {
+          "name": "'hides supplier mutations from viewers'",
+          "cases": 1
+        },
+        {
+          "name": "'handles an empty catalog'",
+          "cases": 1
+        },
+        {
+          "name": "'shows inactive suppliers'",
+          "cases": 1
+        },
+        {
+          "name": "'renders project owner and cost center (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'distinguishes projects without an evidence gate'",
+          "cases": 1
+        },
+        {
+          "name": "'keeps project creation read-only for approvers'",
+          "cases": 1
+        },
+        {
+          "name": "'admin changes the approval threshold'",
+          "cases": 1
+        },
+        {
+          "name": "'non-admin can read but not edit the approval threshold'",
+          "cases": 1
+        },
+        {
+          "name": "'changes language separately from number formatting (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'opens user and delegation creation for admins'",
+          "cases": 1
+        },
+        {
+          "name": "'opens an existing team member for admin editing'",
+          "cases": 1
+        },
+        {
+          "name": "'does not expose admin actions to finance'",
+          "cases": 1
+        },
+        {
+          "name": "'revokes an active delegation explicitly'",
+          "cases": 1
+        },
+        {
+          "name": "'runs reminders on administrator request'",
+          "cases": 1
+        },
+        {
+          "name": "'never offers demo reset outside a standalone preview'",
+          "cases": 1
+        },
+        {
+          "name": "'opens a reset confirmation only for standalone mode'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/components/dialogs.test.jsx",
+      "cases": 39,
+      "names": [
+        {
+          "name": "'renders nothing without an active dialog'",
+          "cases": 1
+        },
+        {
+          "name": "'renders and submits %s through the store'",
+          "cases": 13
+        },
+        {
+          "name": "'renders a non-transactional %s panel'",
+          "cases": 3
+        },
+        {
+          "name": "'renders translated modal title and validation errors (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'uses native dialog cancellation and backdrop dismissal'",
+          "cases": 1
+        },
+        {
+          "name": "'does not close when form contents are clicked'",
+          "cases": 1
+        },
+        {
+          "name": "'disables form submit and cancellation while busy'",
+          "cases": 1
+        },
+        {
+          "name": "'switches a PDF import to mandatory manual metadata'",
+          "cases": 1
+        },
+        {
+          "name": "'does not request PDF metadata for XML imports'",
+          "cases": 1
+        },
+        {
+          "name": "'accepts a selected XML file'",
+          "cases": 1
+        },
+        {
+          "name": "'supports drag-and-drop evidence files'",
+          "cases": 1
+        },
+        {
+          "name": "'sets project manager when allocation project changes'",
+          "cases": 1
+        },
+        {
+          "name": "'excludes inactive or non-approver accounts from assignment options'",
+          "cases": 1
+        },
+        {
+          "name": "'requires a reason for %s'",
+          "cases": 3
+        },
+        {
+          "name": "'allows approval without a mandatory note'",
+          "cases": 1
+        },
+        {
+          "name": "'requires a strong initial user password'",
+          "cases": 1
+        },
+        {
+          "name": "'does not force a password change when editing a user'",
+          "cases": 1
+        },
+        {
+          "name": "'preserves a suppliers inactive state in its edit dialog'",
+          "cases": 1
+        },
+        {
+          "name": "'routes command navigation rather than changing URLs directly'",
+          "cases": 1
+        },
+        {
+          "name": "'hides accounting command from read-only users'",
+          "cases": 1
+        },
+        {
+          "name": "'links notifications to invoices and marks only the chosen item read'",
+          "cases": 1
+        },
+        {
+          "name": "'does not offer mark-read for an already read notification'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/components/identity.test.jsx",
+      "cases": 9,
+      "names": [
+        {
+          "name": "'renders localized labels and submitted credentials (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'defaults to English independently of browser language'",
+          "cases": 1
+        },
+        {
+          "name": "'does not expose demonstration shortcuts in production'",
+          "cases": 1
+        },
+        {
+          "name": "'routes a demo account through the store'",
+          "cases": 1
+        },
+        {
+          "name": "'localizes an authentication error without printing its internals'",
+          "cases": 1
+        },
+        {
+          "name": "'disables submission and demo shortcuts while busy'",
+          "cases": 1
+        },
+        {
+          "name": "'exposes explicit language and theme controls'",
+          "cases": 1
+        },
+        {
+          "name": "'uses password and autocomplete attributes'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/components/shell-app.test.jsx",
+      "cases": 26,
+      "names": [
+        {
+          "name": "'renders boot state before authentication finishes'",
+          "cases": 1
+        },
+        {
+          "name": "'renders authentication when no session exists'",
+          "cases": 1
+        },
+        {
+          "name": "'routes %s to its module'",
+          "cases": 7
+        },
+        {
+          "name": "'denies accounting view to a viewer even when route is forced'",
+          "cases": 1
+        },
+        {
+          "name": "'exposes a working main-content skip target'",
+          "cases": 1
+        },
+        {
+          "name": "'renders a global error, retries and dismisses explicitly'",
+          "cases": 1
+        },
+        {
+          "name": "'places an active transaction error inside its dialog only'",
+          "cases": 1
+        },
+        {
+          "name": "'announces completed work with a status region'",
+          "cases": 1
+        },
+        {
+          "name": "'catches a component exception without exposing its stack'",
+          "cases": 1
+        },
+        {
+          "name": "'marks the current sidebar route and dispatches navigation'",
+          "cases": 1
+        },
+        {
+          "name": "'signs out through the shell'",
+          "cases": 1
+        },
+        {
+          "name": "'exposes topbar command, notification, language and theme actions'",
+          "cases": 1
+        },
+        {
+          "name": "'shows the unread indicator only for unread items'",
+          "cases": 1
+        },
+        {
+          "name": "'uses non-submitting buttons by default'",
+          "cases": 1
+        },
+        {
+          "name": "'makes an icon-only button accessible by name'",
+          "cases": 1
+        },
+        {
+          "name": "'does not activate a disabled control'",
+          "cases": 1
+        },
+        {
+          "name": "'labels a field using its surrounding label'",
+          "cases": 1
+        },
+        {
+          "name": "'renders localized status text'",
+          "cases": 1
+        },
+        {
+          "name": "'renders avatars and helpful empty states without external images'",
+          "cases": 1
+        },
+        {
+          "name": "'limits finance capabilities to finance and administrator roles'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/components/workspace.test.jsx",
+      "cases": 28,
+      "names": [
+        {
+          "name": "'renders the three-pane review workspace (%s)'",
+          "cases": 2
+        },
+        {
+          "name": "'renders the approvals view heading'",
+          "cases": 1
+        },
+        {
+          "name": "'searches and filters through explicit store actions'",
+          "cases": 1
+        },
+        {
+          "name": "'selects an invoice and marks the current selection'",
+          "cases": 1
+        },
+        {
+          "name": "'disables unavailable paging and routes available next page'",
+          "cases": 1
+        },
+        {
+          "name": "'renders a real empty inbox state'",
+          "cases": 1
+        },
+        {
+          "name": "'keeps the submission action disabled when the server disallows it'",
+          "cases": 1
+        },
+        {
+          "name": "'invokes an allowed business decision once'",
+          "cases": 1
+        },
+        {
+          "name": "'shows busy behavior even for an allowed decision'",
+          "cases": 1
+        },
+        {
+          "name": "'offers clarification and rejection only when permitted'",
+          "cases": 1
+        },
+        {
+          "name": "'does not offer decision or import controls to a viewer'",
+          "cases": 1
+        },
+        {
+          "name": "'opens allocation editing only with server capability'",
+          "cases": 1
+        },
+        {
+          "name": "'displays duplicate warning and opens its reason dialog'",
+          "cases": 1
+        },
+        {
+          "name": "'opens evidence from the readiness blocker'",
+          "cases": 1
+        },
+        {
+          "name": "'switches document and activity tabs through the store'",
+          "cases": 1
+        },
+        {
+          "name": "'downloads the preserved original, not the formatted summary'",
+          "cases": 1
+        },
+        {
+          "name": "'distinguishes a failed basic check from business approval'",
+          "cases": 1
+        },
+        {
+          "name": "'shows the second-approval state independently'",
+          "cases": 1
+        },
+        {
+          "name": "'supports explicit mobile pane switching'",
+          "cases": 1
+        },
+        {
+          "name": "'allows evidence upload but reserves acceptance to its owner'",
+          "cases": 1
+        },
+        {
+          "name": "'lets an eligible manager open evidence acceptance'",
+          "cases": 1
+        },
+        {
+          "name": "'downloads evidence and shows the recorded acceptance'",
+          "cases": 1
+        },
+        {
+          "name": "'submits and resets a successful discussion comment'",
+          "cases": 1
+        },
+        {
+          "name": "'does not discard a failed comment'",
+          "cases": 1
+        },
+        {
+          "name": "'links an open question to a resolution dialog'",
+          "cases": 1
+        },
+        {
+          "name": "'renders discussion content as text rather than executable HTML'",
+          "cases": 1
+        },
+        {
+          "name": "'does not render a comment form for viewers'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/e2e/modules.spec.js",
+      "cases": 10,
+      "names": [
+        {
+          "name": "'supplier module: create, edit, deactivate and verify persisted values'",
+          "cases": 1
+        },
+        {
+          "name": "'project and cost-center modules: create both through their forms'",
+          "cases": 1
+        },
+        {
+          "name": "'document module: import XML, preserve original and reuse exact upload'",
+          "cases": 1
+        },
+        {
+          "name": "'manual PDF import: required dates and totals are entered through the screen'",
+          "cases": 1
+        },
+        {
+          "name": "'discussion module: literal text survives reload without executing markup'",
+          "cases": 1
+        },
+        {
+          "name": "'administration module: create a viewer and verify its read-only interface'",
+          "cases": 1
+        },
+        {
+          "name": "'rules module: persist threshold and keep display preferences separate'",
+          "cases": 1
+        },
+        {
+          "name": "'delegation module: create and revoke a bounded delegation'",
+          "cases": 1
+        },
+        {
+          "name": "'notification module: run reminders and mark only own notification read'",
+          "cases": 1
+        },
+        {
+          "name": "'audit module and keyboard navigation expose a readable evidence trail'",
+          "cases": 1
+        }
+      ]
+    },
+    {
+      "file": "frontend/tests/e2e/workflows.spec.js",
+      "cases": 4,
+      "names": [
+        {
+          "name": "'English default, German switch, mobile layout and dark theme'",
+          "cases": 1
+        },
+        {
+          "name": "'read-only identity cannot mutate; server rejects forged writes'",
+          "cases": 1
+        },
+        {
+          "name": "'service acceptance and independent approval gate accounting export'",
+          "cases": 1
+        },
+        {
+          "name": "'cross-organization invoice and original access is denied'",
+          "cases": 1
+        }
+      ]
+    }
+  ],
+  "warning": "Declared tests are not a claim that their supported dependencies or database were available locally. See VERIFICATION.md."
+}

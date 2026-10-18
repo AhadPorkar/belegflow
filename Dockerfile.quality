@@ -1,0 +1,13 @@
+# Disposable verification image. Never use it as the production image.
+FROM node:24.22.0-bookworm-slim AS node
+FROM eclipse-temurin:25-jdk-noble
+RUN apt-get update && apt-get install --no-install-recommends -y ca-certificates curl python3 && rm -rf /var/lib/apt/lists/*
+COPY --from=node /usr/local/ /usr/local/
+WORKDIR /src
+COPY frontend/package*.json frontend/
+RUN cd frontend && if [ -f package-lock.json ]; then npm ci; else npm install; fi
+RUN cd frontend && npx playwright install --with-deps chromium
+COPY . .
+RUN chmod +x mvnw scripts/*.sh
+ENV BF_INTEGRATION=true BF_DEMO=true BF_COOKIE_SECURE=false BF_TEST_DATABASE_ACK=DISPOSABLE
+ENTRYPOINT ["sh","scripts/verify-all.sh"]

@@ -1,0 +1,14 @@
+test_additional_cases_are_allowed (test_report_gate.ReportGateTest.test_additional_cases_are_allowed) ... ok
+test_complete_report_passes (test_report_gate.ReportGateTest.test_complete_report_passes) ... ok
+test_error_fails (test_report_gate.ReportGateTest.test_error_fails) ... ok
+test_failure_fails (test_report_gate.ReportGateTest.test_failure_fails) ... ok
+test_malformed_xml_fails (test_report_gate.ReportGateTest.test_malformed_xml_fails) ... ok
+test_missing_count_fails (test_report_gate.ReportGateTest.test_missing_count_fails) ... ok
+test_missing_report_fails (test_report_gate.ReportGateTest.test_missing_report_fails) ... ok
+test_skipped_case_fails (test_report_gate.ReportGateTest.test_skipped_case_fails) ... ok
+test_too_few_cases_fail (test_report_gate.ReportGateTest.test_too_few_cases_fail) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.002s
+
+OK

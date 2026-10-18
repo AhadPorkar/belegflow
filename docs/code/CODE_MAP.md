@@ -374,3 +374,52 @@ public static String text(String value,int max,boolean required)
 | [`frontend/src/features/identity/Login.jsx`](../../frontend/src/features/identity/Login.jsx) | `Login` |
 | [`frontend/src/features/invoices/Workspace.jsx`](../../frontend/src/features/invoices/Workspace.jsx) | `Workspace` |
 | [`frontend/src/features/settings/Settings.jsx`](../../frontend/src/features/settings/Settings.jsx) | `Settings` |
+
+## Feature view and test sources (0.2.0)
+
+All paths link to the actual repository files. See the EN/DE module contracts for semantics.
+
+| Source | Kind |
+|---|---|
+| [frontend/src/features/accounting/Exports.jsx](../../frontend/src/features/accounting/Exports.jsx) | Feature view |
+| [frontend/src/features/audit/AuditPage.jsx](../../frontend/src/features/audit/AuditPage.jsx) | Feature view |
+| [frontend/src/features/catalog/CatalogPages.jsx](../../frontend/src/features/catalog/CatalogPages.jsx) | Feature view |
+| [frontend/src/features/identity/Login.jsx](../../frontend/src/features/identity/Login.jsx) | Feature view |
+| [frontend/src/features/invoices/Workspace.jsx](../../frontend/src/features/invoices/Workspace.jsx) | Feature view |
+| [frontend/src/features/settings/Settings.jsx](../../frontend/src/features/settings/Settings.jsx) | Feature view |
+| [frontend/src/components/Dialogs.jsx](../../frontend/src/components/Dialogs.jsx) | Shared view |
+| [frontend/src/components/Shell.jsx](../../frontend/src/components/Shell.jsx) | Shared view |
+| [frontend/src/components/ui.jsx](../../frontend/src/components/ui.jsx) | Shared view |
+| [server/src/test/java/com/belegflow/server/AdapterTest.java](../../server/src/test/java/com/belegflow/server/AdapterTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/ConcurrencyIntegrationTest.java](../../server/src/test/java/com/belegflow/server/ConcurrencyIntegrationTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/IntegrationTest.java](../../server/src/test/java/com/belegflow/server/IntegrationTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java](../../server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/audit/AuditModuleTest.java](../../server/src/test/java/com/belegflow/server/audit/AuditModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/bootstrap/BootstrapModuleTest.java](../../server/src/test/java/com/belegflow/server/bootstrap/BootstrapModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/catalog/CatalogModuleTest.java](../../server/src/test/java/com/belegflow/server/catalog/CatalogModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/config/JacksonConfigurationTest.java](../../server/src/test/java/com/belegflow/server/config/JacksonConfigurationTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/documents/DocumentModuleTest.java](../../server/src/test/java/com/belegflow/server/documents/DocumentModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/documents/ImportModuleTest.java](../../server/src/test/java/com/belegflow/server/documents/ImportModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/exports/ExportModuleTest.java](../../server/src/test/java/com/belegflow/server/exports/ExportModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/identity/IdentityModuleTest.java](../../server/src/test/java/com/belegflow/server/identity/IdentityModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/identity/LoginRateLimitFilterTest.java](../../server/src/test/java/com/belegflow/server/identity/LoginRateLimitFilterTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/invoices/InvoiceModuleTest.java](../../server/src/test/java/com/belegflow/server/invoices/InvoiceModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/invoices/InvoiceRepositoryTest.java](../../server/src/test/java/com/belegflow/server/invoices/InvoiceRepositoryTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/notifications/NotificationModuleTest.java](../../server/src/test/java/com/belegflow/server/notifications/NotificationModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/shared/SharedModuleTest.java](../../server/src/test/java/com/belegflow/server/shared/SharedModuleTest.java) | Backend test/fixture |
+| [server/src/test/java/com/belegflow/server/support/ServiceFixture.java](../../server/src/test/java/com/belegflow/server/support/ServiceFixture.java) | Backend test/fixture |
+| [frontend/tests/components/accounting-audit.test.jsx](../../frontend/tests/components/accounting-audit.test.jsx) | Frontend test/fixture |
+| [frontend/tests/components/catalog-settings.test.jsx](../../frontend/tests/components/catalog-settings.test.jsx) | Frontend test/fixture |
+| [frontend/tests/components/dialogs.test.jsx](../../frontend/tests/components/dialogs.test.jsx) | Frontend test/fixture |
+| [frontend/tests/components/helpers.jsx](../../frontend/tests/components/helpers.jsx) | Frontend test/fixture |
+| [frontend/tests/components/identity.test.jsx](../../frontend/tests/components/identity.test.jsx) | Frontend test/fixture |
+| [frontend/tests/components/setup.js](../../frontend/tests/components/setup.js) | Frontend test/fixture |
+| [frontend/tests/components/shell-app.test.jsx](../../frontend/tests/components/shell-app.test.jsx) | Frontend test/fixture |
+| [frontend/tests/components/workspace.test.jsx](../../frontend/tests/components/workspace.test.jsx) | Frontend test/fixture |
+| [frontend/tests/e2e/modules.spec.js](../../frontend/tests/e2e/modules.spec.js) | Frontend test/fixture |
+| [frontend/tests/e2e/workflows.spec.js](../../frontend/tests/e2e/workflows.spec.js) | Frontend test/fixture |
+| [frontend/tests/support/fixtures.mjs](../../frontend/tests/support/fixtures.mjs) | Frontend test/fixture |
+| [frontend/tests/support/test-api.mjs](../../frontend/tests/support/test-api.mjs) | Frontend test/fixture |
+| [frontend/tests/unit/core.test.mjs](../../frontend/tests/unit/core.test.mjs) | Frontend test/fixture |
+| [frontend/tests/unit/http.test.mjs](../../frontend/tests/unit/http.test.mjs) | Frontend test/fixture |
+| [frontend/tests/unit/modules.test.mjs](../../frontend/tests/unit/modules.test.mjs) | Frontend test/fixture |

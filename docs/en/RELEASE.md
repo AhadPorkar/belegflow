@@ -1,6 +1,6 @@
 # Release gates and commercial boundary
 
-Version 0.1.0 is a source/engineering candidate. The following gates are intentionally open; no green badges are fabricated.
+Version 0.2.0 is a source/engineering candidate. The following gates are intentionally open; no green badges are fabricated.
 
 | Gate | Required evidence before real customer use |
 |---|---|
@@ -26,3 +26,8 @@ Use redacted/synthetic invoices first. Agree measurable targets for handling tim
 ## Security review checklist
 
 No public demo credentials; no leaked `.env`; secure same-origin cookies; no browser-stored access tokens; CSRF on unsafe methods; actual principal revalidation; tenant-scoped read and write checks; creator/second-approver separation; bounded uploads/XML; force-attachment downloads; audit in transactions; safe CSV; idempotent exports; private database; controlled DB privileges; known patch/advisory status. A passing checklist is not an independent penetration test.
+
+
+## 0.2.0 verification and upgrade requirement
+
+Before a pilot deployment, complete [Testing](TESTING.md), enable strict coverage, review reports and commit the dependency lockfile. The [upgrade diagnosis](TROUBLESHOOTING.md) explains the YAML-only startup fix; do not delete data volumes. Default reminder startup delay is 30 seconds and is configurable with `BF_REMINDER_INITIAL_DELAY_MS`. No schema migration changed. Automated success does not replace the manual security, privacy, accessibility and restore checks above.

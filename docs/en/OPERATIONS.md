@@ -99,3 +99,8 @@ Decide controller/processor responsibilities, hosting access, subprocessors, app
 Document/audit/export rows are protected from ordinary updates/deletes by database triggers. This is not WORM storage, cryptographic tamper-proofing against a DBA, or a complete legal archive. Automatic retention deletion, legal holds, individual-data erasure and organization purge are not implemented. Define a reviewed policy and implement/test the needed administrative procedures before real personal data is processed. Deleting an entire database to 'solve' an erasure request is not an acceptable routine.
 
 For suspected compromise: restrict access, preserve appropriate evidence, rotate compromised secrets through controlled procedures, assess affected records/organizations, and invoke the organization's notification/legal process. Do not publish confidential invoice contents in GitHub issues. See SECURITY.md and docs/en/RELEASE.md.
+
+
+## 0.2.0 verification and upgrade requirement
+
+Before a pilot deployment, complete [Testing](TESTING.md), enable strict coverage, review reports and commit the dependency lockfile. The [upgrade diagnosis](TROUBLESHOOTING.md) explains the YAML-only startup fix; do not delete data volumes. Default reminder startup delay is 30 seconds and is configurable with `BF_REMINDER_INITIAL_DELAY_MS`. No schema migration changed. Automated success does not replace the manual security, privacy, accessibility and restore checks above.

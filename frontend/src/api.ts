@@ -23,6 +23,7 @@ export class HttpApi implements Api {
         catch {
             throw new ApiError('NETWORK_ERROR');
         }
+        if (response.status === 401) this.token = null;
         const text = await response.text();
         let result: unknown;
         try {
@@ -60,8 +61,12 @@ export class HttpApi implements Api {
         catch {
             throw new ApiError('NETWORK_ERROR');
         }
-        if (!r.ok)
-            throw new ApiError(r.status === 403 ? 'FORBIDDEN' : 'NOT_FOUND', r.status);
+        if (!r.ok) {
+            if (r.status === 401) { this.token = null; throw new ApiError('AUTH_REQUIRED', 401); }
+            const fallback = r.status === 403 ? 'FORBIDDEN' : r.status === 404 ? 'NOT_FOUND' : 'UNEXPECTED_ERROR';
+            const error = await r.json().catch(() => null) as { code?: string } | null;
+            throw new ApiError(error?.code ?? fallback, r.status);
+        }
         const disposition = r.headers.get('Content-Disposition') ?? '';
         const encoded = /filename\*=UTF-8''([^;]+)/i.exec(disposition)?.[1];
         const plain = /filename="([^"]+)"/i.exec(disposition)?.[1];

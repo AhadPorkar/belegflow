@@ -10,3 +10,6 @@ docs
 frontend/dist
 frontend/test-results
 frontend/playwright-report
+
+quality-results/
+frontend/coverage/

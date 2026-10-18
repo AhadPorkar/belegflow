@@ -1,6 +1,6 @@
 # BelegFlow user guide
 
-Version 0.1.0 | [Deutsch](../de/USER_GUIDE.md)
+Version 0.2.0 | [Deutsch](../de/USER_GUIDE.md)
 
 ## 1. Understand the three decisions
 
@@ -108,3 +108,32 @@ The CSV is a documented generic handoff, **not a DATEV import format**. Your acc
 | Unknown server error | Give the administrator the reference identifier and time, not the confidential invoice contents. |
 
 Report suspicious cross-organization access immediately. Do not upload customer invoices to the public portfolio or standalone showcase.
+
+
+## 13. Maintain suppliers, projects and cost centers
+
+As Finance or Admin, open Suppliers and choose Add supplier. Enter a recognizable name, optional billing email/VAT reference and active status. Save, search for the record and use Edit to correct it. Deactivate an obsolete supplier instead of assuming historical invoices will be deleted. VAT references are stored; the product does not verify them with a tax authority.
+
+Open Projects, choose Add project, enter a unique code/name and select an eligible project manager. Keep "Evidence before approval" enabled when service completion must be accepted. Save. Add the needed cost center using its code and name. Return to the invoice and use Edit allocation. Creating projects/cost centers is implemented; a general-purpose catalog bulk editor, deletions and ERP synchronization are not.
+
+## 14. Administration and personal settings
+
+Only Admin can add/edit team members. Open Workspace settings, Add member, then enter name, email, role and an initial password of 14-128 characters. Supply the initial password securely outside a public issue. Updating an existing member with an empty password preserves its current password. Changing the role or active status invalidates existing sessions. The current administrator cannot disable or demote itself. Password-reset email and self-service signup are not implemented.
+
+Edit the high-value gross threshold in Workspace settings and save. This changes future submissions, not a silent rewrite of decisions already recorded. Add delegation by choosing both eligible users and a bounded time interval. Revoke ends future delegated actions; the history keeps the actual past actor.
+
+Personal interface language and number/date format are separate. A German number format does not switch the interface to German, and a language switch does not change stored amounts. Use light/dark preference for the local browser.
+
+## 15. Notifications, audit and support handoff
+
+Open the bell to review your notifications. Follow a notice to the invoice, examine the current state, then mark the chosen notice read. Reading someone else's invoice does not grant access to their personal notification. Admin can use Run reminder check in Workspace settings; repeated checks do not intentionally create another same-day duplicate.
+
+Open Audit trail to browse organization events and follow an invoice link. Load earlier entries when needed. A comment is context; an audit event records a specific operation. Neither should be edited to hide an error. Report an issue with the version, approximate time, operation and reference ID. Do not include real invoice attachments, passwords or session cookies in GitHub.
+
+## 16. A complete acceptance exercise
+
+In the isolated demo, locate the Reviewed `KE-2026-1048` (a separate duplicate also exists). Finance sees missing service acceptance. Sign in as Leon, open Service evidence, download the attachment and accept with a note. Return as Finance and submit. Return as Leon and approve independently. Finance creates the accounting package and checks its originals, CSV and manifest. At each switch, confirm the displayed account and invoice number. This is a manual acceptance exercise, not a substitute for the automated suites.
+
+For a high-value example, `HIT-26041` already has a first approval in the server fixture. A different administrator can provide the second. To test refusal, a Viewer must not gain mutation rights by changing a URL or replaying an API request. Use only the disposable test instance for such checks.
+
+For build/startup problems rather than invoice handling, read [Troubleshooting](TROUBLESHOOTING.md). For automated validation, read [Testing](TESTING.md).

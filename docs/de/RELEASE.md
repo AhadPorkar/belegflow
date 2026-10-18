@@ -1,6 +1,6 @@
 # Freigabekriterien und kommerzielle Grenze
 
-Version 0.1.0 ist ein Entwicklungs-/Quellcodekandidat. Die folgenden Kriterien sind offen; es werden keine bestandenen Builds erfunden.
+Version 0.2.0 ist ein Entwicklungs-/Quellcodekandidat. Die folgenden Kriterien sind offen; es werden keine bestandenen Builds erfunden.
 
 | Kriterium | Erforderlicher Nachweis vor Kundendaten |
 |---|---|
@@ -20,3 +20,8 @@ Nicht implementiert sind Checkout/Abrechnung, E-Mail, Selbstregistrierung, SSO/M
 Nach den passenden Prüfungen ist ein kontrollierter Pilot mit manueller Einrichtung und vertraglicher Abrechnung denkbar. Das Paket allein ist aber kein fertig betriebener Abonnementdienst. Preisannahmen sind keine Marktnachweise.
 
 Zuerst synthetische oder redigierte Dokumente verwenden, echte Formate und Buchhaltungsanforderungen prüfen und Bearbeitungszeit, Freigabeverzoegerung, offene Ausnahmen und Einrichtungsaufwand messen. Verantwortung für Vertretung, zweite Freigabe, problematische Dateien und Rücknahme einer Version eindeutig festlegen.
+
+
+## Pruef- und Upgradepflicht für 0.2.0
+
+Vor Pilotbetrieb [Tests](TESTING.md) vollständig ausführen, strikte Coverage einschalten, Berichte prüfen und die Lockdatei committen. [Fehlerdiagnose](TROUBLESHOOTING.md) erklaert den YAML-Startfehler; Datenvolumes nicht loeschen. Der Erinnerungsjob startet standardmaessig nach 30 Sekunden; `BF_REMINDER_INITIAL_DELAY_MS` ist konfigurierbar. Keine Schemaaenderung. Automatischer Erfolg ersetzt keine manuelle Sicherheits-, Datenschutz-, Barrierefreiheits- und Wiederherstellungspruefung.

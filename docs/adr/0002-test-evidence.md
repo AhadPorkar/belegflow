@@ -1,0 +1,3 @@
+# ADR 0002 - Separate declared tests, execution evidence and release approval
+
+Status: implemented in 0.2.0. Unit, SQL, React and browser tests answer different questions. Decision: maintain module contracts, use real PostgreSQL for database behavior, execute actual React components for UI contracts, collect JaCoCo/V8/JUnit/Playwright reports, reject skipped integration suites and retain explicit pending statuses when dependencies cannot run. Default quality runs measure coverage; release-quality mode enforces configured thresholds. A compatibility preview and mocked dependencies never certify production. Manual security/accessibility/restore review remains required.

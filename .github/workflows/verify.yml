@@ -3,12 +3,78 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+    inputs:
+      strict_coverage:
+        description: Enforce release coverage thresholds (80% line, 70% branch)
+        type: boolean
+        default: false
 permissions:
   contents: read
+concurrency:
+  group: belegflow-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
-  full-stack:
+  configuration-regression:
+    name: Jackson 3 configuration regression (no database)
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
+    env:
+      BF_INTEGRATION: "false"
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-java@v6.1.0
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      - name: Compile backend tests and run the original-error regression first
+        run: |
+          chmod +x mvnw
+          ./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest -Dsurefire.failIfNoSpecifiedTests=false test
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: configuration-regression
+          path: server/target/surefire-reports/**
+  frontend:
+    name: Frontend core, every screen, coverage and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      BF_STRICT_COVERAGE: ${{ inputs.strict_coverage && 'true' || 'false' }}
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: "24.22.0"
+      - name: Check bilingual documentation and repository links
+        run: python3 scripts/check-documentation.py
+      - name: Resolve exact dependencies
+        working-directory: frontend
+        run: |
+          if [ -f package-lock.json ]; then npm ci; else
+            echo '::warning::Review and commit the generated package-lock.json before releasing.'
+            npm install
+          fi
+      - name: Type check, all unit/component tests and measured coverage
+        working-directory: frontend
+        run: npm run typecheck && npm run test:coverage && npm run build
+      - name: Frontend vulnerability gate
+        working-directory: frontend
+        run: npm audit --audit-level=high
+      - uses: actions/upload-artifact@v7.0.2
+        if: always()
+        with:
+          name: frontend-verification
+          path: |
+            frontend/coverage/**
+            frontend/test-results/**
+            frontend/package-lock.json
+  full-stack:
+    name: All backend modules, real PostgreSQL and real-browser journeys
+    needs: [configuration-regression, frontend]
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
     services:
       postgres:
         image: postgres:18.6
@@ -25,9 +91,12 @@ jobs:
       BF_DATABASE_USER: belegflow
       BF_DATABASE_PASSWORD: ci-only-not-a-production-secret
       BF_INTEGRATION: "true"
+      BF_TEST_DATABASE_ACK: DISPOSABLE
       BF_DEMO: "true"
       BF_COOKIE_SECURE: "false"
+      BF_REMINDER_INITIAL_DELAY_MS: "3600000"
       BF_REMINDER_DELAY_MS: "3600000"
+      BF_STRICT_COVERAGE: ${{ inputs.strict_coverage && 'true' || 'false' }}
     steps:
       - uses: actions/checkout@v7.0.1
       - uses: actions/setup-java@v6.1.0
@@ -38,48 +107,24 @@ jobs:
       - uses: actions/setup-node@v7.1.0
         with:
           node-version: "24.22.0"
-      - name: Resolve frontend dependencies
+      - name: Prepare browser dependencies
         working-directory: frontend
         run: |
-          if [ -f package-lock.json ]; then npm ci; else
-            echo '::warning::First resolution: review and commit the generated package-lock.json before releasing.'
-            npm install
-          fi
-      - name: Client checks and production assets
-        working-directory: frontend
-        run: npm run typecheck && npm test && npm run build
-      - name: Spring, domain and real PostgreSQL integration tests
+          if [ -f package-lock.json ]; then npm ci; else npm install; fi
+          npx playwright install --with-deps chromium
+      - name: Complete application verification (fails when any integration suite is skipped)
         run: |
           chmod +x mvnw scripts/*.sh
-          mkdir -p server/src/main/resources/static
-          cp -R frontend/dist/. server/src/main/resources/static/
-          ./mvnw --batch-mode --no-transfer-progress verify
-      - name: Start the real application
-        run: |
-          java -jar server/target/belegflow-server-0.1.0.jar > /tmp/belegflow-server.log 2>&1 &
-          for i in $(seq 1 90); do
-            if curl --fail --silent http://localhost:8080/actuator/health; then exit 0; fi
-            sleep 2
-          done
-          cat /tmp/belegflow-server.log
-          exit 1
-      - name: Browser dependencies
-        working-directory: frontend
-        run: npx playwright install --with-deps chromium
-      - name: Real-browser journeys
-        working-directory: frontend
-        run: npm run test:e2e
-      - name: Dependency vulnerability report
-        working-directory: frontend
-        run: npm audit --audit-level=high
-      - name: Upload verification evidence
+          ./scripts/verify-all.sh
+      - uses: actions/upload-artifact@v7.0.2
         if: always()
-        uses: actions/upload-artifact@v7.0.2
         with:
-          name: belegflow-verification
+          name: full-stack-verification
           path: |
+            quality-results/**
             **/target/surefire-reports/**
-            frontend/playwright-report/**
+            **/target/site/jacoco/**
+            frontend/coverage/**
             frontend/test-results/**
+            frontend/playwright-report/**
             frontend/package-lock.json
-            /tmp/belegflow-server.log

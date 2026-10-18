@@ -1,0 +1,33 @@
+# A dedicated, disposable database. This file never mounts your application's pgdata volume.
+name: belegflow-quality
+services:
+  db-test:
+    image: postgres:18.6
+    environment:
+      POSTGRES_DB: belegflow_test
+      POSTGRES_USER: belegflow
+      POSTGRES_PASSWORD: local-quality-only-not-for-production
+    tmpfs: [/var/lib/postgresql]
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U belegflow -d belegflow_test"]
+      interval: 3s
+      timeout: 5s
+      retries: 30
+  verifier:
+    build:
+      context: .
+      dockerfile: Dockerfile.quality
+    environment:
+      BF_DATABASE_URL: jdbc:postgresql://db-test:5432/belegflow_test
+      BF_DATABASE_USER: belegflow
+      BF_DATABASE_PASSWORD: local-quality-only-not-for-production
+      BF_INTEGRATION: "true"
+      BF_TEST_DATABASE_ACK: DISPOSABLE
+      BF_DEMO: "true"
+      BF_COOKIE_SECURE: "false"
+      BF_REMINDER_INITIAL_DELAY_MS: "3600000"
+      BF_REMINDER_DELAY_MS: "3600000"
+      BF_STRICT_COVERAGE: ${BF_STRICT_COVERAGE:-false}
+    depends_on:
+      db-test: {condition: service_healthy}
+    volumes: ["./quality-results:/src/quality-results"]

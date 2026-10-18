@@ -28,7 +28,7 @@ Der Server liefert stabile Fehlercodes. Der Client übersetzt diese nach EN/DE. 
 
 ## Geld, Dokumente und XML
 
-Java verwendet `BigDecimal`, die API Dezimalzeichenfolgen und der Client `BigInt`-Centwerte. `MoneyRules` begrenzt Stellenzahl und Nachkommastellen und prüft Summen exakt. Keine binaeren Gleitkommazahlen für finanzielle Entscheidungen einsetzen. Rechnungsdaten sind Kalendertage; Ereignisse sind Zeitpunkte mit Darstellung für Europe/Berlin.
+Java verwendet `BigDecimal`, die API Dezimalzeichenfolgen und der Client `BigInt`-Centwerte. `MoneyRules` begrenzt Stellenzahl und Nachkommastellen und prüft Summen exakt. Keine binären Gleitkommazahlen für finanzielle Entscheidungen einsetzen. Rechnungsdaten sind Kalendertage; Ereignisse sind Zeitpunkte mit Darstellung für Europe/Berlin.
 
 Der JDK-DOM-Parser deaktiviert DTD, externe Entitaeten, externe Schemas und XInclude. Namespaces und Pfade sind explizit; Dateigrößen sind begrenzt. Trotzdem ist das nur ein Extraktions-/Basisprüfungsumfang, kein rechtlicher Konformitaetsvalidator. Eine Erweiterung braucht gepflegte Schema-/Schematron-Artefakte, Versionen, Lizenzen und passende gültige/ungültige Referenzdateien. Gleiche lokale XML-Tagnamen allein reichen nicht zur sicheren Formaterkennung.
 
@@ -36,9 +36,9 @@ Originalbytes bleiben unverändert. PDFs verwenden manuelle Metadaten ohne OCR. 
 
 ## Leistungsabnahme und Status
 
-`WorkflowPolicy` prüft `WorkflowFacts`, Akteur, Vertretung und gewuenschte Aktion. Die Abnahme prüft Projektverantwortung, gültige Vertretung, Erstellerverbot, bearbeitbaren Zustand und vorhandene Nachweise. Neue Nachweise oder ein Projektwechsel setzen die Abnahme zurück. Die Weiterleitung speichert die Anforderung einer zweiten Freigabe. Klaerung/Wiedereröffnung setzen fruehere Unterschriften zurück. Export verlangt die gespeicherten Freigabefakten.
+`WorkflowPolicy` prüft `WorkflowFacts`, Akteur, Vertretung und gewuenschte Aktion. Die Abnahme prüft Projektverantwortung, gültige Vertretung, Erstellerverbot, bearbeitbaren Zustand und vorhandene Nachweise. Neue Nachweise oder ein Projektwechsel setzen die Abnahme zurück. Die Weiterleitung speichert die Anforderung einer zweiten Freigabe. Klärung/Wiedereröffnung setzen fruehere Unterschriften zurück. Export verlangt die gespeicherten Freigabefakten.
 
-Keine freie Statusauswahl einführen. Neue fachliche Aktionen brauchen Invarianten, Audit-Ereignis, Unit-Tests, API und übersetzte UI gemeinsam. Synthetische Startdaten duerfen Testzustaende direkt aufbauen; Produktionsendpunkte duerfen diesen Weg nicht wiederverwenden.
+Keine freie Statusauswahl einführen. Neue fachliche Aktionen brauchen Invarianten, Audit-Ereignis, Unit-Tests, API und übersetzte UI gemeinsam. Synthetische Startdaten dürfen Testzustaende direkt aufbauen; Produktionsendpunkte dürfen diesen Weg nicht wiederverwenden.
 
 ## Speicherung und Export
 
@@ -73,3 +73,14 @@ Modularer Monolith: eine nachvollziehbare Installation statt verteiltem Aufwand.
 ## Echter Konnektor als eigene Erweiterung
 
 Externe Zustellung von Freigabe und Exportstatus trennen. Remote-IDs, Idempotenz, Wiederholungen und Tokenwechsel speichern. Bei zuverlaessiger externer Zustellung eine Outbox entwickeln. Doppelte Schreibvorgaenge verhindern und widerrufene Berechtigungen behandeln. Erst mit echtem Provider-Sandboxzugriff testen und danach die Integration bewerben. CSV-Namen oder Mockantworten beweisen keinen DATEV-Liveanschluss.
+
+
+## Entwicklungsvertrag ab Version 0.2.0
+
+[Modulreferenz](MODULE_REFERENCE.md), [Testanleitung](TESTING.md), [Testmatrix](../testing/TEST_MATRIX.md) und [Konfigurationsvorfall](TROUBLESHOOTING.md) bilden zusammen mit dem Code den Entwicklungsvertrag.
+
+Die YAML-Regression braucht keine Datenbank. Modul-Units mocken externe Grenzen; PostgreSQL-Faelle prüfen echte Constraints, Transaktionen und Organisationstrennung. Die Regelmatrix definiert unabhaengige Erwartungen für alle 224 Rollen-/Status-/Aktionskombinationen. Frontend-Core-Faelle laufen sowohl unter node:test als auch Vitest; Komponenten verwenden die konfigurierte React-Bibliothek mit jsdom. Browser-Spezifikationen verwenden die gebaute Anwendung.
+
+Bei Kontowechsel private Listen, Details, Kataloge, Hinweise, Audit und Dialoge leeren; verspaetete Antworten durch Request-Tickets verwerfen. Erfasste Rechnungs-ID/Version und Idempotenzschluessel dürfen beim sicheren Wiederholen erhalten bleiben, niemals aber unbemerkt eine neu gewaehlte Rechnung ansprechen. Vor Aenderungen die Race-Tests lesen.
+
+Migration V1 bleibt unveraendert. Dieses Upgrade verlangt keinen Datenreset. Die Nebenlaeufigkeitsfaelle nur im separaten Qualitaetsstack ausführen, niemals auf Kundendaten.

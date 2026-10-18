@@ -23,3 +23,16 @@ Use the latest stable supported compatible release, not every newest non-LTS or 
 Spring BOM-managed versions are not individually overridden. npm's top-level dependencies are exact; the transitive lockfile still requires the first networked resolution and review. Eclipse Temurin images use the 25 LTS family tag to receive vendor patches; production release must record and pin tested digests. The GitHub runner uses a moving hosted image and action release tags, not immutable commit hashes; tighten these to approved hashes/digests as part of the release gate.
 
 **Actual local tools:** JDK 21.0.11, Node 22.16.0, TypeScript 5.8.3 and a bundled React/ReactDOM 16.0.0 compatibility renderer. These tools exercised only the documented local scopes. They were not substituted into production manifests, and their success does not verify the configured modern dependency matrix.
+
+
+## Test tool additions in 0.2.0
+
+| Tool | Configured version | Maintainer source |
+|---|---|---|
+| Vitest / V8 provider | 5.0.5 | https://github.com/vitest-dev/vitest/releases |
+| React Testing Library | 16.3.3 | https://github.com/testing-library/react-testing-library/releases |
+| DOM Testing Library | 10.4.1 | https://github.com/testing-library/dom-testing-library/releases |
+| jsdom | 30.1.3 | https://github.com/jsdom/jsdom/releases |
+| JaCoCo | 0.8.15 | https://www.jacoco.org/jacoco/trunk/doc/changes.html |
+
+Exact dependencies are declared; new test packages were not downloaded in the authoring environment. Resolve, review and commit the lockfile, then run the configured toolchain and security checks. No all-package compatibility claim is made before that run.

@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test from '../support/test-api.mjs';
 import assert from 'node:assert/strict';
 import {money,date,time,initials,csv,decimalCents,validTotals} from '../../src/format.ts';
 import {messages,translate} from '../../src/i18n.ts';

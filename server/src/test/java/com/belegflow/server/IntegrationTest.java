@@ -22,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 /** Real PostgreSQL + Spring Security tests. Opt-in prevents an absent DB being reported as tested. */
 @SpringBootTest(properties= {
-    "bf.demo-enabled=true","server.servlet.session.cookie.secure=false","bf.reminder-delay-ms=3600000"
+    "bf.demo-enabled=true","server.servlet.session.cookie.secure=false","bf.reminder-delay-ms=3600000","bf.reminder-initial-delay-ms=3600000"
 }
 ) @AutoConfigureMockMvc @EnabledIfEnvironmentVariable(named="BF_INTEGRATION",matches="true") @Transactional class IntegrationTest {
     @Autowired MockMvc mvc;

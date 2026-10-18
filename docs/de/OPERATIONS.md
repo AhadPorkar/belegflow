@@ -24,7 +24,7 @@ export BF_COOKIE_SECURE=false
 ./mvnw -pl server spring-boot:run
 ```
 
-In einem zweiten Terminal `cd frontend && npm install && npm run dev` ausführen. Die dort angezeigte Vite-Adresse oeffnen; `/api` wird nach 8080 weitergeleitet. Ein einzelnes Server-JAR mit Webdateien entsteht mit `sh scripts/build.sh`. `BF_INTEGRATION=true` niemals gegen eine Kundendatenbank setzen; diese Tests erwarten separate synthetische Daten.
+In einem zweiten Terminal `cd frontend && npm install && npm run dev` ausführen. Die dort angezeigte Vite-Adresse öffnen; `/api` wird nach 8080 weitergeleitet. Ein einzelnes Server-JAR mit Webdateien entsteht mit `sh scripts/build.sh`. `BF_INTEGRATION=true` niemals gegen eine Kundendatenbank setzen; diese Tests erwarten separate synthetische Daten.
 
 ## Konfiguration
 
@@ -42,7 +42,7 @@ In einem zweiten Terminal `cd frontend && npm install && npm run dev` ausführen
 | PORT | Standard 8080; der mitgelieferte Healthcheck erwartet 8080. |
 | BF_INTEGRATION | Ausschliesslich Testschalter für echte Datenbankintegration. |
 
-Bootstrap erfolgt nur bei leerer Organisationstabelle. Spaetere Umgebungsvariablen ändern keine bestehenden Benutzerpasswoerter. Konten über die Administration ändern. Auch ein geändertes `.env`-Datenbankpasswort rotiert nicht automatisch das Passwort eines vorhandenen PostgreSQL-Volumes. Zuerst die Datenbank kontrolliert umstellen, dann das Anwendungsgeheimnis aktualisieren.
+Bootstrap erfolgt nur bei leerer Organisationstabelle. Spätere Umgebungsvariablen ändern keine bestehenden Benutzerpasswoerter. Konten über die Administration ändern. Auch ein geändertes `.env`-Datenbankpasswort rotiert nicht automatisch das Passwort eines vorhandenen PostgreSQL-Volumes. Zuerst die Datenbank kontrolliert umstellen, dann das Anwendungsgeheimnis aktualisieren.
 
 ## Kontrollierter Pilotbetrieb
 
@@ -61,7 +61,7 @@ Umgebungsvariablen sind für privilegierte Containerbetreiber einsehbar. Für ko
 
 Das Beispielkonto besitzt das Schema, damit Flyway migrieren kann. Das ist eine dokumentierte Demo-/Pilotvereinfachung. Eine gehaertete Installation sollte Migration/Eigentuemer und Laufzeitrolle trennen, Laufzeitrechte auf benoetigte Tabellen/Sequenzen begrenzen und DDL sowie Triggeränderungen verhindern. Eine fertige Least-Privilege-/RLS-Installation wird nicht behauptet. Migrationen und Laufzeit mit den echten Rollen testen.
 
-Diese Anleitung unterstuetzt eine Instanz. Sitzungen und Anmeldelimiter liegen im Speicher; ein Neustart meldet Benutzer ab. Mehrere Replikate brauchen bewusst entwickelte gemeinsame Sitzungen, Jobkoordination und Limiter. Ein Load-Balancer allein liefert keine Hochverfügbarkeit.
+Diese Anleitung unterstützt eine Instanz. Sitzungen und Anmeldelimiter liegen im Speicher; ein Neustart meldet Benutzer ab. Mehrere Replikate brauchen bewusst entwickelte gemeinsame Sitzungen, Jobkoordination und Limiter. Ein Load-Balancer allein liefert keine Hochverfügbarkeit.
 
 ## Organisation einrichten
 
@@ -71,7 +71,7 @@ Es gibt keine Selbstregistrierung, Abonnementabrechnung oder Einladungs-E-Mail. 
 
 ## Sicherung und Wiederherstellung
 
-Originale und Exportpakete liegen als PostgreSQL-`bytea` vor. Ein konsistenter Datenbankdump umfasst daher Metadaten und diese Bytes. Lokales Hilfsskript: `sh scripts/backup.sh`. Es erzeugt einen Dump mit restriktiven Dateirechten, keine verschlüsselte externe Sicherung. Freigegebene Kopien verschlüsseln, ausserhalb des Hosts speichern, Aufbewahrung festlegen und Aktualitaet überwachen. Geheimnisse/Konfiguration getrennt sichern.
+Originale und Exportpakete liegen als PostgreSQL-`bytea` vor. Ein konsistenter Datenbankdump umfasst daher Metadaten und diese Bytes. Lokales Hilfsskript: `sh scripts/backup.sh`. Es erzeugt einen Dump mit restriktiven Dateirechten, keine verschlüsselte externe Sicherung. Freigegebene Kopien verschlüsseln, außerhalb des Hosts speichern, Aufbewahrung festlegen und Aktualitaet überwachen. Geheimnisse/Konfiguration getrennt sichern.
 
 Jede Strategie durch Wiederherstellung in eine **separate wegwerfbare Testdatenbank** prüfen. Niemals die einzige Produktionskopie überschreiben:
 
@@ -96,8 +96,13 @@ Erinnerungen sind tageweise dedupliziert, kein verteilter Scheduler. Exportwiede
 
 ## Datenschutz, Aufbewahrung und Vorfaelle
 
-Verantwortlichkeiten, Hostingzugriffe, Auftragsverarbeitung, Unterauftragnehmer, Transfers, Vertragsunterlagen und Aufbewahrung fachlich/rechtlich beurteilen lassen. EU-Hosting allein ist keine Datenschutz-Zertifizierung. Standardmaessig gibt es keine externe Analyse oder KI-Datenübertragung.
+Verantwortlichkeiten, Hostingzugriffe, Auftragsverarbeitung, Unterauftragnehmer, Transfers, Vertragsunterlagen und Aufbewahrung fachlich/rechtlich beurteilen lassen. EU-Hosting allein ist keine Datenschutz-Zertifizierung. Standardmäßig gibt es keine externe Analyse oder KI-Datenübertragung.
 
 Trigger verhindern gewoehnliche Änderungen/Löschungen an Dokument-, Audit- und Exportzeilen. Das ist kein WORM-Speicher, kein Schutz gegen jeden DBA und kein vollständiges rechtliches Archiv. Automatische Aufbewahrungslöschung, Legal Holds, Betroffenenlöschung und Organisationsbereinigung sind nicht implementiert. Vor echten personenbezogenen Daten die benoetigten administrativen Verfahren definieren, implementieren und testen. Die ganze Datenbank zu löschen ist kein regulaeres Löschkonzept.
 
 Bei Verdacht auf Kompromittierung Zugriff begrenzen, angemessene Beweise erhalten, Geheimnisse kontrolliert rotieren, betroffene Daten und Organisationen ermitteln und den vorgesehenen Melde-/Rechtsprozess einschalten. Keine vertraulichen Belege in GitHub-Issues veröffentlichen. Siehe SECURITY.md und die Freigabekriterien.
+
+
+## Pruef- und Upgradepflicht für 0.2.0
+
+Vor Pilotbetrieb [Tests](TESTING.md) vollständig ausführen, strikte Coverage einschalten, Berichte prüfen und die Lockdatei committen. [Fehlerdiagnose](TROUBLESHOOTING.md) erklaert den YAML-Startfehler; Datenvolumes nicht loeschen. Der Erinnerungsjob startet standardmaessig nach 30 Sekunden; `BF_REMINDER_INITIAL_DELAY_MS` ist konfigurierbar. Keine Schemaaenderung. Automatischer Erfolg ersetzt keine manuelle Sicherheits-, Datenschutz-, Barrierefreiheits- und Wiederherstellungspruefung.

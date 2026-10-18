@@ -15,7 +15,7 @@ import java.time.*;
         this.db=db;
         this.clock=clock;
     }
-    @Scheduled(fixedDelayString="${bf.reminder-delay-ms}",initialDelay=30000) @Transactional public void tick() {
+    @Scheduled(fixedDelayString="${bf.reminder-delay-ms}",initialDelayString="${bf.reminder-initial-delay-ms:30000}") @Transactional public void tick() {
         run(null);
     }
     @Transactional public int run(UUID tenant) {

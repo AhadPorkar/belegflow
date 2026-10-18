@@ -80,3 +80,14 @@ Generate domain Javadoc with `javadoc -d .build/javadoc $(find domain/src/main/j
 ## Adding a live connector safely
 
 Define an adapter boundary and delivery state separate from invoice approval/export. Store remote operation IDs and retry/idempotency state. Design an outbox if reliable external delivery is required. Keep original payload hashes, prevent duplicate remote writes, handle token renewal and revoked authorization, and test against the actual provider sandbox before advertising a live integration. A CSV filename or a mocked response is not proof of a DATEV connector.
+
+
+## Version 0.2.0 development contracts
+
+Read the [module-by-module reference](MODULE_REFERENCE.md), [testing guide](TESTING.md), [test matrix](../testing/TEST_MATRIX.md) and [configuration incident](TROUBLESHOOTING.md). These are part of the code contract, not optional marketing documentation.
+
+The real YAML regression is database-free. Server module tests use Mockito only at external boundaries; PostgreSQL cases verify actual constraints, transactions and tenant behavior. The pure policy matrix defines independent expected outcomes for all 224 role/state/action combinations. Frontend core tests share their case bodies between node:test and Vitest; component tests render the real configured React library in jsdom. Full-browser specifications use the built application.
+
+When authentication changes, clear private lists, detail, catalogs, notifications, audit and pending dialog state; ignore late responses with request tickets. Captured ID/version and idempotency keys must survive a safe retry but must never silently target a newly selected invoice. Review race tests before changing this logic.
+
+Database migration V1 remains unchanged. There is no data-reset requirement for this upgrade. Use the dedicated quality stack; do not run its concurrency cases on a customer database.

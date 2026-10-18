@@ -1,0 +1,13 @@
+{
+  "scope": "Documentation HTML loaded via set_content in local Chromium; not application verification",
+  "checks": [
+    "English default",
+    "All 12 en guides render without horizontal overflow",
+    "All 12 de guides render without horizontal overflow",
+    "Search locates and opens matching guide",
+    "German testing guide fits 390px mobile viewport",
+    "Start page language controls",
+    "No uncaught handbook/landing JavaScript errors"
+  ],
+  "page_errors": []
+}
