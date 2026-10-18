@@ -1,6 +1,6 @@
 # BelegFlow user guide
 
-Version 0.2.0 | [Deutsch](../de/USER_GUIDE.md)
+Version 0.2.1 | [Deutsch](../de/USER_GUIDE.md)
 
 ## 1. Understand the three decisions
 

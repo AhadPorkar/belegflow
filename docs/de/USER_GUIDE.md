@@ -1,6 +1,6 @@
 # BelegFlow Benutzerhandbuch
 
-Version 0.2.0 | [English](../en/USER_GUIDE.md)
+Version 0.2.1 | [English](../en/USER_GUIDE.md)
 
 ## 1. Drei getrennte Entscheidungen
 

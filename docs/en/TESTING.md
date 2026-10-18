@@ -1,6 +1,6 @@
 # Testing, coverage and release verification
 
-Version 0.2.0 | [Deutsch](../de/TESTING.md) | [Module reference](MODULE_REFERENCE.md) | [Actual execution evidence](../testing/VERIFICATION.md)
+Version 0.2.1 | [Deutsch](../de/TESTING.md) | [Module reference](MODULE_REFERENCE.md) | [Actual execution evidence](../testing/VERIFICATION.md)
 
 ## What "all modules" means
 
@@ -58,7 +58,7 @@ Enable the explicit release gate with the PowerShell `-StrictCoverage` switch or
 
 ## GitHub Actions
 
-The workflow has three jobs: a database-free Jackson regression, complete frontend checks/build, and the dependent full-stack job. Each publishes evidence. The frontend job also runs `npm audit --audit-level=high`; this additional vulnerability gate may fail even when functional tests pass. Workflow dispatch can request strict coverage. A successful default run measures coverage but does not certify that the optional release threshold or manual security/accessibility gates were approved.
+The workflow has three jobs: an explicit backend test-compilation step and database-free Jackson/multipart regressions, complete frontend checks/build, and the dependent full-stack job. Each publishes evidence. The frontend job also runs `npm audit --audit-level=high`; this additional vulnerability gate may fail even when functional tests pass. Workflow dispatch can request strict coverage. A successful default run measures coverage but does not certify that the optional release threshold or manual security/accessibility gates were approved.
 
 The ZIP deliberately contains no invented dependency lockfile. A networked first resolution generates it. Review and commit it, rerun using `npm ci`, then archive the commit SHA and CI artifacts used for release. A badge should link to the real workflow outcome, not a static green image.
 
@@ -76,3 +76,14 @@ Full automated success is necessary, not sufficient: keyboard/screen-reader revi
 ## Report gate self-tests
 
 `python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v` runs nine isolated tests of the evidence gate. Their XML is intentionally synthetic and must never be copied into application Surefire reports. The full verification runs these before collecting application evidence.
+
+## 0.2.1 multipart regression / Multipart-Regression
+
+```bash
+# Focused check, JDK 25 and access to Maven repositories required:
+./mvnw --batch-mode --no-transfer-progress test-compile
+./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
+```
+
+`MultipartRequestBuilderTest` uses the actual test helper with mocked SQL lookup values. It does not connect to PostgreSQL and does not replace the import integration tests. Its execution in the pinned environment remains required; see [the verification boundary](../testing/VERIFICATION.md).
+

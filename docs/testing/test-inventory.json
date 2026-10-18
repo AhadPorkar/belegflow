@@ -1,8 +1,8 @@
 {
-  "release": "0.2.0",
+  "release": "0.2.1",
   "declared": {
     "domain": 306,
-    "server_unit_configuration": 132,
+    "server_unit_configuration": 138,
     "postgres_integration": 47,
     "frontend_core": 92,
     "react_component": 132,
@@ -11,8 +11,8 @@
   "locally_executed": {
     "domain": 306,
     "frontend_core": 92,
-    "compatibility_browser": 17,
-    "report_gate_unit": 9
+    "report_gate_unit": 9,
+    "documentation_browser": 7
   },
   "backend_files": [
     {
@@ -98,6 +98,11 @@
     {
       "file": "server/src/test/java/com/belegflow/server/shared/SharedModuleTest.java",
       "cases": 8,
+      "integration": false
+    },
+    {
+      "file": "server/src/test/java/com/belegflow/server/MultipartRequestBuilderTest.java",
+      "cases": 6,
       "integration": false
     }
   ],
@@ -615,5 +620,21 @@
       ]
     }
   ],
-  "warning": "Declared tests are not a claim that their supported dependencies or database were available locally. See VERIFICATION.md."
+  "warning": "Declared tests are not a claim that their supported dependencies or database were available locally. See VERIFICATION.md.",
+  "historical_local_0_2_0": {
+    "compatibility_browser": 17
+  },
+  "observed_user_ci_0_2_0": {
+    "source_archive": "logs_106020289651.zip",
+    "frontend_tests": 224,
+    "frontend_core": 92,
+    "react_component": 132,
+    "typecheck": "passed",
+    "production_build": "passed",
+    "lines": 87.38,
+    "branches": 84.82,
+    "statements": 86.49,
+    "functions": 88.44,
+    "backend_test_compilation": "failed; addressed in 0.2.1, not re-executed here"
+  }
 }

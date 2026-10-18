@@ -1,0 +1,14 @@
+{
+  "scope": "Documentation UI only; not application E2E",
+  "passed": 7,
+  "checks": [
+    "English handbook default",
+    "English incident guide",
+    "German incident guide and language routing",
+    "Search index contains current incident",
+    "Mobile handbook has no horizontal page overflow",
+    "Landing page language controls",
+    "No documentation JavaScript errors"
+  ],
+  "browser": "system Chromium via Playwright; not the pinned application test toolchain"
+}

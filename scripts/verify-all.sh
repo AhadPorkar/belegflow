@@ -37,7 +37,7 @@ PROFILE=''
 # Intentional word splitting permits the optional, controlled profile flag only.
 ./mvnw --batch-mode --no-transfer-progress $PROFILE verify
 python3 scripts/assert-integration-reports.py
-java -jar server/target/belegflow-server-0.2.0.jar > quality-results/server.log 2>&1 &
+java -jar server/target/belegflow-server-0.2.1.jar > quality-results/server.log 2>&1 &
 SERVER_PID=$!
 ready=false
 for i in $(seq 1 90); do

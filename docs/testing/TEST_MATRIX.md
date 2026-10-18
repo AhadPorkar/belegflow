@@ -1,8 +1,8 @@
 # Module test matrix / Modul-Testmatrix
 
-Version 0.2.0. EN/DE module contracts: [English](../en/MODULE_REFERENCE.md), [Deutsch](../de/MODULE_REFERENCE.md).
+Version 0.2.1. EN/DE module contracts: [English](../en/MODULE_REFERENCE.md), [Deutsch](../de/MODULE_REFERENCE.md).
 
-The matrix identifies tests, not measured coverage. React/JUnit/PostgreSQL/production-E2E cases are supplied but were not run in the authoring environment. Domain 306, frontend core 92 and compatibility browser 17 were executed.
+The matrix identifies test contracts, not complete coverage. Uploaded 0.2.0 CI evidence confirms 224 frontend tests (92 core + 132 components), type checking and the production build passed; see [observed CI results](CI-106020289651.md). For 0.2.1, 306 domain and 92 frontend core cases were rerun locally. Spring/PostgreSQL/production-E2E execution remains pending. Six new database-free multipart regression cases are supplied but were not executed here. The earlier 17 compatibility-browser checks are historical, not new 0.2.1 results.
 
 | Module / Modul | Backend suites | Frontend suites |
 |---|---|---|
@@ -16,15 +16,18 @@ The matrix identifies tests, not measured coverage. React/JUnit/PostgreSQL/produ
 | Accounting handoff and idempotency / Buchhaltungsübergabe und Idempotenz | `ExportModuleTest, DomainTest, IntegrationTest, ModuleIntegrationTest, ConcurrencyIntegrationTest` | `accounting-audit.test.jsx; dialogs.test.jsx; modules.test.mjs; workflows.spec.js` |
 | Audit history / Audit-Verlauf | `AuditModuleTest, ModuleIntegrationTest, InvoiceModuleTest` | `accounting-audit.test.jsx; modules.test.mjs; modules.spec.js` |
 | Reminders and notifications / Erinnerungen und Benachrichtigungen | `NotificationModuleTest, DomainTest, ModuleIntegrationTest` | `catalog-settings.test.jsx; dialogs.test.jsx; modules.test.mjs; modules.spec.js` |
-| Bootstrap, SQL normalization and configuration / Initialisierung, SQL-Normalisierung und Konfiguration | `BootstrapModuleTest, SharedModuleTest, AdapterTest, JacksonConfigurationTest, ModuleIntegrationTest` | `http.test.mjs; shell-app.test.jsx; identity.test.jsx` |
+| Bootstrap, SQL normalization and configuration / Initialisierung, SQL-Normalisierung und Konfiguration | `BootstrapModuleTest, SharedModuleTest, AdapterTest, JacksonConfigurationTest, MultipartRequestBuilderTest, ModuleIntegrationTest` | `http.test.mjs; shell-app.test.jsx; identity.test.jsx` |
 
 ## Exact declared file inventory
+
+The last column concerns the authoring environment only. The 132 component cases below additionally passed in the supplied 0.2.0 CI logs; they are unchanged in 0.2.1.
 
 | Suite file | Expanded cases | Local execution |
 |---|---:|---|
 | [server/src/test/java/com/belegflow/server/AdapterTest.java](../../server/src/test/java/com/belegflow/server/AdapterTest.java) | 12 | Not executed in the authoring environment |
 | [server/src/test/java/com/belegflow/server/ConcurrencyIntegrationTest.java](../../server/src/test/java/com/belegflow/server/ConcurrencyIntegrationTest.java) | 3 | Not executed in the authoring environment |
 | [server/src/test/java/com/belegflow/server/IntegrationTest.java](../../server/src/test/java/com/belegflow/server/IntegrationTest.java) | 15 | Not executed in the authoring environment |
+| [server/src/test/java/com/belegflow/server/MultipartRequestBuilderTest.java](../../server/src/test/java/com/belegflow/server/MultipartRequestBuilderTest.java) | 6 | Added in 0.2.1; not executed here |
 | [server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java](../../server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java) | 29 | Not executed in the authoring environment |
 | [server/src/test/java/com/belegflow/server/audit/AuditModuleTest.java](../../server/src/test/java/com/belegflow/server/audit/AuditModuleTest.java) | 4 | Not executed in the authoring environment |
 | [server/src/test/java/com/belegflow/server/bootstrap/BootstrapModuleTest.java](../../server/src/test/java/com/belegflow/server/bootstrap/BootstrapModuleTest.java) | 4 | Not executed in the authoring environment |

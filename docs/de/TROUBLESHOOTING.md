@@ -1,6 +1,54 @@
-# Fehlerdiagnose und Aktualisierung auf 0.2.0
+# Fehlerdiagnose und Aktualisierung auf 0.2.1
 
 [English](../en/TROUBLESHOOTING.md) | [Tests](TESTING.md) | [Betrieb](OPERATIONS.md)
+
+## Neuer Lauf 106020289651: Multipart-Test kompiliert nicht
+
+Dies ist **nicht derselbe Jackson-Startfehler**. Maven scheitert bereits in `testCompile`, bevor die ausgewählten Jackson-Tests ausgeführt werden:
+
+```text
+ModuleIntegrationTest.java:[53,93] incompatible types:
+MockMultipartHttpServletRequestBuilder cannot be converted to MockHttpServletRequestBuilder
+```
+
+Die Hilfsmethode in `server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java` muss den tatsächlichen Multipart-Typ zurückgeben:
+
+```java
+// Vorher:
+MockHttpServletRequestBuilder pdf(String number) {
+    // multipart(...).file(...).param(...)
+}
+
+// Nachher:
+MockMultipartHttpServletRequestBuilder pdf(String number) {
+    // Der vorhandene Methodenrumpf bleibt unverändert.
+}
+```
+
+Multipart- und normale Request-Builder sind in der aktuellen Spring-API unterschiedliche konkrete Typen. Gleiche Fluent-Methoden bedeuten keine solche Vererbungsbeziehung. Kein Cast, kein Spring-Downgrade und kein Abschalten der Testkompilierung ist erforderlich.
+
+Version 0.2.1 ergänzt sechs datenbankfreie Fälle in `MultipartRequestBuilderTest` und trennt die CI-Vorprüfung in Testkompilierung und anschließende Jackson-/Multipart-Regressionen. PostgreSQL- und echte Browser-Tests bleiben erhalten.
+
+Im selben hochgeladenen Lauf haben **224 Frontend-Tests bestanden**, außerdem Typprüfung, Produktions-Build und npm-Audit. Gemessen wurden **87,38 % Zeilen- und 84,82 % Zweigabdeckung**. Für den vollständigen Stack liegt wegen der fehlgeschlagenen Backend-Voraussetzung kein erfolgreicher Lauf vor. Siehe [Protokollnachweis](../testing/CI-106020289651.md).
+
+### Sicher aktualisieren
+
+Den Inhalt des ZIP-Ordners `belegflow/` in das bestehende Repository übernehmen; keinen zweiten verschachtelten Ordner erstellen. `.env`, Geheimnisse, Datenbank-Volumes, eigene Änderungen und eine bereits geprüfte `frontend/package-lock.json` erhalten. Die Paketversion ist jetzt 0.2.1; eine vorhandene Lockdatei nur hinsichtlich dieser Paketmetadaten angleichen. Abhängigkeitsversionen wurden nicht geändert.
+
+Ein erneuter Lauf des **alten GitHub-Laufs** verwendet weiterhin den alten Commit. Die korrigierten Dateien committen und pushen oder den korrigierten Branch manuell auswählen.
+
+Es gibt **keine Datenbankmigration**. Für diesen Testcompiler-Fehler weder `docker compose down -v` ausführen noch PostgreSQL-Daten löschen.
+
+```bash
+# Gezielte Prüfung mit JDK 25 und Zugriff auf Maven-Repositories:
+./mvnw --batch-mode --no-transfer-progress test-compile
+./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
+```
+
+Der neue Test verwendet die tatsächliche Hilfsmethode und simuliert nur SQL-Nachschlagewerte. Er ersetzt keine PostgreSQL-Integration. Die Ausführung im vorgesehenen Stack bleibt erforderlich; siehe [Prüfgrenzen](../testing/VERIFICATION.md).
+
+Offizielle API-Referenz: https://docs.spring.io/spring-framework/docs/7.0.9/javadoc-api/org/springframework/test/web/servlet/request/MockMultipartHttpServletRequestBuilder.html
+
 
 ## Ursache des hochgeladenen GitHub-Actions-Fehlers
 
@@ -27,7 +75,7 @@ Jackson 3 hat diese Option aus `SerializationFeature` verschoben. Ein anderer Bo
 
 ## Quellcode aktualisieren, Daten erhalten
 
-Wichtige Daten zuerst sichern. Das neue Archiv in ein sauberes Verzeichnis entpacken. Eigene Anpassungen vergleichen und bewusst übernehmen; Geheimnisse aus einer sicheren Quelle kopieren, nicht aus Git. Kein zweites `belegflow/` innerhalb des vorhandenen Repositorys erzeugen. Quellcode, Tests, Workflow und Dokumentation gemeinsam committen. Version 0.2.0 enthält keine geänderte oder neue Datenbankmigration.
+Wichtige Daten zuerst sichern. Das neue Archiv in ein sauberes Verzeichnis entpacken. Eigene Anpassungen vergleichen und bewusst übernehmen; Geheimnisse aus einer sicheren Quelle kopieren, nicht aus Git. Kein zweites `belegflow/` innerhalb des vorhandenen Repositorys erzeugen. Quellcode, Tests, Workflow und Dokumentation gemeinsam committen. Version 0.2.1 enthält keine geänderte oder neue Datenbankmigration.
 
 Zuerst den isolierten Qualitätslauf ausführen, dann die Anwendung mit `docker compose up --build -d` neu bauen. `docker compose logs app` prüfen. Wertvolle Datenvolumes nicht mit `docker compose down -v` löschen, um einen Jackson-Konfigurationsfehler zu beheben. Der Qualitätsstack besitzt einen eigenen Namen und eine separate, wegwerfbare Testdatenbank.
 

@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.2.1 - 2026-10-18 - multipart test compiler repair
+
+* Fix the return type of `ModuleIntegrationTest.pdf(String)` to `MockMultipartHttpServletRequestBuilder`, resolving the exact compiler diagnostic in uploaded run 106020289651.
+* Add six database-free regression cases using the actual multipart helper; SQL lookups alone are mocked.
+* Split CI test compilation from the focused Jackson/multipart regression execution; retain full PostgreSQL and real-browser gates.
+* Record the real 224-test frontend success, measured coverage and production build from the supplied 0.2.0 logs separately from local 0.2.1 evidence.
+* Update bilingual troubleshooting, module/test documentation and the handbook. No dependency, Flyway migration, business workflow or frontend implementation change.
+* Local rerun: 306 domain checks, 92 client core tests and 9 report-gate checks. Full Spring/JDK 25, database and production-browser verification remains pending; the new six tests have not been executed here.
+
+
 ## 0.2.0 - 2026-10-18 - test and documentation expansion
 
 ### Fixed

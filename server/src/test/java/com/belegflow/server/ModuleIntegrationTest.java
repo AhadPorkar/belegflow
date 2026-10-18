@@ -47,13 +47,14 @@ class ModuleIntegrationTest {
     void command(UUID id,String who,String action,int status)throws Exception {
         request(post("/api/invoices/"+id+"/commands"),who,Map.of("version",version(id),"action",action,"note","Integration review"),status);
     }
-    MockHttpServletRequestBuilder pdf(String number){
+    // Spring's multipart builder has its own self-typed hierarchy; do not cast it to a JSON request builder.
+    MockMultipartHttpServletRequestBuilder pdf(String number){
         return multipart("/api/invoices/import").file(new MockMultipartFile("file","invoice.pdf","application/pdf",("%PDF-1.7\n"+number).getBytes(StandardCharsets.UTF_8)))
             .param("supplier_id",db.queryForObject("SELECT supplier_id FROM invoice WHERE id=?",UUID.class,invoice("AC-26-104")).toString())
             .param("invoice_number",number).param("net","100.00").param("tax","19.00").param("gross","119.00");
     }
     @Test void publicConfigurationIsEnglishFirstAndVersioned()throws Exception {
-        mvc.perform(get("/api/public/config")).andExpect(status().isOk()).andExpect(jsonPath("$.defaultLocale").value("en")).andExpect(jsonPath("$.version").value("0.2.0"));
+        mvc.perform(get("/api/public/config")).andExpect(status().isOk()).andExpect(jsonPath("$.defaultLocale").value("en")).andExpect(jsonPath("$.version").value("0.2.1"));
     }
     @Test void localePersistsOnlyForTheAuthenticatedMember()throws Exception {
         request(put("/api/session/locale"),FINANCE,Map.of("locale","de"),200);

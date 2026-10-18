@@ -1,6 +1,6 @@
 # Module reference and extension contracts
 
-Version 0.2.0 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
+Version 0.2.1 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
 
 These boundaries describe the implemented application, not a future ERP. Paths are relative to the repository; server package files live under `server/src/main/java/com/belegflow/server/`, domain classes under `domain/src/main/java/com/belegflow/domain/`. The API reference gives payloads; source gives exact signatures.
 
@@ -203,3 +203,7 @@ React tests render actual React DOM components in jsdom with action spies. State
 ## 13. Module change checklist
 
 Write the rule and permission contract; test a negative case first; update DTOs and validated inputs; add any required new migration; preserve versioning, transactions and audit; update EN/DE copy and keyboard behavior; extend unit, SQL and browser contracts as appropriate; update the test matrix, API reference and changelog; run complete verification and inspect its reports.
+
+## Test infrastructure: multipart request builders (0.2.1)
+
+`ModuleIntegrationTest.pdf(String)` returns `MockMultipartHttpServletRequestBuilder`. It intentionally omits dates so missing-date integration cases remain meaningful. Callers chain `.param(...)` and security postprocessors without casts. `MultipartRequestBuilderTest` executes the helper with mocked SQL lookup results but real Spring request builders; its six cases verify request shape, exact uploaded bytes and fluent type safety. They do not claim database coverage. See [troubleshooting](TROUBLESHOOTING.md) and [execution evidence](../testing/VERIFICATION.md).

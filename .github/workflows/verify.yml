@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   configuration-regression:
-    name: Jackson 3 configuration regression (no database)
+    name: Backend test compilation and regressions (no database)
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -27,10 +27,13 @@ jobs:
           distribution: temurin
           java-version: "25"
           cache: maven
-      - name: Compile backend tests and run the original-error regression first
+      - name: Compile every backend test before running regressions
         run: |
           chmod +x mvnw
-          ./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest -Dsurefire.failIfNoSpecifiedTests=false test
+          ./mvnw --batch-mode --no-transfer-progress test-compile
+      - name: Run Jackson configuration and multipart request regressions
+        run: |
+          ./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
       - uses: actions/upload-artifact@v7.0.2
         if: always()
         with:

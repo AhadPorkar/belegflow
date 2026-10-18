@@ -1,6 +1,6 @@
 # Tests, Coverage und Freigabeprüfung
 
-Version 0.2.0 | [English](../en/TESTING.md) | [Modulreferenz](MODULE_REFERENCE.md) | [Tatsächliche Ergebnisse](../testing/VERIFICATION.md)
+Version 0.2.1 | [English](../en/TESTING.md) | [Modulreferenz](MODULE_REFERENCE.md) | [Tatsächliche Ergebnisse](../testing/VERIFICATION.md)
 
 ## Umfang der Modulprüfung
 
@@ -75,3 +75,14 @@ Tastatur/Screenreader, Barrierefreiheit, Bedrohungsmodell, Abhängigkeiten/Lizen
 ## Selbsttest der Berichtskontrolle
 
 `python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v` prueft die Berichtskontrolle mit neun isolierten Faellen. Ihr XML ist bewusst synthetisch und darf nie als Anwendungs-Surefire-Bericht verwendet werden. Der Gesamtlauf fuehrt diese Pruefung ebenfalls aus.
+
+## 0.2.1 multipart regression / Multipart-Regression
+
+```bash
+# Gezielte Prüfung mit JDK 25 und Zugriff auf Maven-Repositories:
+./mvnw --batch-mode --no-transfer-progress test-compile
+./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
+```
+
+Der neue Test verwendet die tatsächliche Hilfsmethode und simuliert nur SQL-Nachschlagewerte. Er ersetzt keine PostgreSQL-Integration. Die Ausführung im vorgesehenen Stack bleibt erforderlich; siehe [Prüfgrenzen](../testing/VERIFICATION.md).
+

@@ -1,8 +1,56 @@
-# Troubleshooting and upgrading to 0.2.0
+# Troubleshooting and upgrading to 0.2.1
 
 [Deutsch](../de/TROUBLESHOOTING.md) | [Testing](TESTING.md) | [Operations](OPERATIONS.md)
 
-## The error in the uploaded GitHub Actions run
+## New run 106020289651: multipart test compilation
+
+This is **not a recurrence of the Jackson startup error**. Maven failed in `testCompile`, before the selected Jackson tests could run:
+
+```text
+ModuleIntegrationTest.java:[53,93] incompatible types:
+MockMultipartHttpServletRequestBuilder cannot be converted to MockHttpServletRequestBuilder
+```
+
+The helper in `server/src/test/java/com/belegflow/server/ModuleIntegrationTest.java` must return its actual multipart builder type:
+
+```java
+// Before:
+MockHttpServletRequestBuilder pdf(String number) {
+    // multipart(...).file(...).param(...)
+}
+
+// After:
+MockMultipartHttpServletRequestBuilder pdf(String number) {
+    // The existing body is unchanged.
+}
+```
+
+The multipart and ordinary builders are separate concrete types in the current Spring API. Shared fluent operations do not make one a subtype of the other. Do not add a cast, drop the multipart file, downgrade Spring, or disable test compilation.
+
+Version 0.2.1 adds `MultipartRequestBuilderTest` (six database-free cases) and splits the CI preflight into an explicit compile step followed by the Jackson/multipart regressions. All database and real-browser suites are retained.
+
+The same uploaded run confirms **224 frontend tests passed**, along with type checking, production build and the npm audit gate. It reports **87.38% lines / 84.82% branches** for the frontend. The full-stack job had no successful execution because its backend prerequisite failed. See [the source-specific evidence](../testing/CI-106020289651.md).
+
+### Apply the repair safely
+
+Replace or merge the contents of the ZIP's `belegflow/` folder into the existing repository root, not into a nested second folder. Keep your `.env`, deployment secrets, database volumes, intentional code changes and existing reviewed `frontend/package-lock.json`. The application metadata is now 0.2.1; update an existing lockfile's top-level package version accordingly. No dependency version was changed by this patch.
+
+A rerun of the **old GitHub run** still tests the old commit. Commit and push the corrected files so a new run uses the repair, or select the corrected branch for a manual workflow dispatch.
+
+There is **no database migration** in this repair. Do not run `docker compose down -v` or remove your PostgreSQL volume to address a Java test-compiler error.
+
+```bash
+# Focused check, JDK 25 and access to Maven repositories required:
+./mvnw --batch-mode --no-transfer-progress test-compile
+./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
+```
+
+`MultipartRequestBuilderTest` uses the actual test helper with mocked SQL lookup values. It does not connect to PostgreSQL and does not replace the import integration tests. Its execution in the pinned environment remains required; see [the verification boundary](../testing/VERIFICATION.md).
+
+Official API reference: https://docs.spring.io/spring-framework/docs/7.0.9/javadoc-api/org/springframework/test/web/servlet/request/MockMultipartHttpServletRequestBuilder.html
+
+
+## Earlier run 106009699774: Jackson configuration startup error
 
 The first meaningful error in `full-stack/8_Spring, domain and real PostgreSQL integration tests.txt` is a property-binding failure:
 

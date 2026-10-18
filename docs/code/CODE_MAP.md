@@ -423,3 +423,7 @@ All paths link to the actual repository files. See the EN/DE module contracts fo
 | [frontend/tests/unit/core.test.mjs](../../frontend/tests/unit/core.test.mjs) | Frontend test/fixture |
 | [frontend/tests/unit/http.test.mjs](../../frontend/tests/unit/http.test.mjs) | Frontend test/fixture |
 | [frontend/tests/unit/modules.test.mjs](../../frontend/tests/unit/modules.test.mjs) | Frontend test/fixture |
+
+## Multipart regression (0.2.1)
+
+`server/src/test/java/com/belegflow/server/MultipartRequestBuilderTest.java` contains six database-free tests for the actual `ModuleIntegrationTest.pdf(String)` helper. The concrete return type is multipart-specific; production application APIs are unchanged. `.github/workflows/verify.yml` exposes full backend `test-compile` as an independent preflight step before the Jackson/multipart regression selector. See [the exact incident and upgrade notes](../en/TROUBLESHOOTING.md).

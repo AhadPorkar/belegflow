@@ -1,6 +1,6 @@
 # Modulreferenz und Erweiterungsvertrag
 
-Version 0.2.0 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
+Version 0.2.1 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
 
 Die folgenden Grenzen beschreiben die implementierte Anwendung, kein zukünftiges ERP. Pfade sind relativ zum Repository. Bei Java-Paketpfaden gilt `server/src/main/java/com/belegflow/server/`; Domänenklassen liegen unter `domain/src/main/java/com/belegflow/domain/`. Die API-Referenz enthält Payloads, der Quellcode die exakten Signaturen.
 
@@ -203,3 +203,7 @@ React-Tests verwenden echte React-DOM-Komponenten mit jsdom und Aktions-Spies. Z
 ## 13. Checkliste für Moduländerungen
 
 Fachregel und Rechte schriftlich festlegen; Negativfall zuerst testen; DTO und validierte Eingaben ändern; erforderliche neue Migration anlegen; Versionierung/Transaktion/Audit erhalten; EN/DE und Tastaturbedienung aktualisieren; Unit-, SQL- und Browservertrag passend erweitern; Testmatrix, API-Referenz und Changelog aktualisieren; vollständigen Qualitätslauf und Berichte prüfen.
+
+## Testinfrastruktur: Multipart-Request-Builder (0.2.1)
+
+`ModuleIntegrationTest.pdf(String)` liefert `MockMultipartHttpServletRequestBuilder`. Datumsfelder fehlen absichtlich, damit die Integrationsfälle für fehlende Datumsangaben aussagekräftig bleiben. `.param(...)` und Security-Postprozessoren bleiben ohne Cast verkettbar. `MultipartRequestBuilderTest` verwendet echte Spring-Builder und simuliert nur SQL-Nachschlagewerte. Sechs Fälle prüfen Request-Struktur, exakte Dateibytes und Typsicherheit; sie ersetzen keine Datenbanktests. Siehe [Fehlerdiagnose](TROUBLESHOOTING.md) und [Prüfnachweis](../testing/VERIFICATION.md).

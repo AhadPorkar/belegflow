@@ -1,74 +1,77 @@
-# BelegFlow 0.2.0 verification report
+# BelegFlow 0.2.1 verification report
 
-Date: October 18, 2026. Status: engineering candidate with expanded tests; full-stack execution pending.
+Release date: October 18, 2026. Status: **targeted compiler-fix engineering candidate**.
 
-## Actually executed for this revision
+[Observed CI evidence](CI-106020289651.md) | [Module matrix](TEST_MATRIX.md) | [English troubleshooting](../en/TROUBLESHOOTING.md) | [Deutsche Fehlerdiagnose](../de/TROUBLESHOOTING.md)
 
-| Layer | Result | Evidence and limit |
+## What was fixed
+
+`ModuleIntegrationTest.pdf(String)` declared `MockHttpServletRequestBuilder` while returning the separate, self-typed `MockMultipartHttpServletRequestBuilder`. The return declaration now matches the multipart value. No unsafe cast, library downgrade, disabled test, or application behavior change is used to hide the failure.
+
+Six new database-free `MultipartRequestBuilderTest` cases use the actual integration helper and Spring request builders. SQL lookup results alone are mocked. They check the return contract, original PDF bytes, metadata/decimal fields, deliberately absent dates, date-parameter chaining, and request-postprocessor chaining.
+
+The CI preflight now exposes `test-compile` as its own step, then runs both Jackson and multipart regression suites. The PostgreSQL/real-browser gate remains in place. Dependencies have not been upgraded or downgraded in this repair.
+
+## Three distinct kinds of evidence
+
+### 1. Observed in the user's supplied 0.2.0 CI logs
+
+* Frontend: **224 real Vitest tests passed** across 9 files (92 core + 132 component).
+* TypeScript check and Vite production build passed.
+* Aggregate coverage: statements **86.49%**, branches **84.82%**, functions **88.44%**, lines **87.38%**.
+* npm audit reported 0 vulnerabilities in that run.
+* Backend production source compilation completed, but test compilation failed. The Jackson tests and full-stack verification were not successfully executed.
+
+These observations replace the former uncertainty about whether the supplied React component suite could run at all. They are not results of a 0.2.1 rerun. Frontend source, tests, tooling configuration, and dependency selections are unchanged by this patch; only the package's release version changes.
+
+### 2. Executed locally again for 0.2.1
+
+| Check | Result | Scope |
 |---|---|---|
-| Java domain rules and role/state/action matrix | **306 / 306 passed** | `domain-local.log`; actual source compiled and executed with OpenJDK 21.0.12.1 using the offline helper. Not a Maven/Java 25 run. |
-| Frontend core tests | **92 / 92 passed** | `frontend-local.log`; real store, HTTP, formatting/i18n code, Node 22.16.0. |
-| Report-gate unit tests | **9 / 9 passed** | `quality-gate-local.log`; synthetic XML verifies that missing/skipped/failed integration evidence is rejected. These fixtures are not app results. |
-| Strict TypeScript check | **Passed** | Local TypeScript 5.8.3, `tsc --noEmit`; typed `.ts` application files, not JSX views. |
-| Compatibility browser checks | **17 / 17 passed** | `browser-compatibility.json`; Chromium 144.0.7559.96, bundled React 16 and browser-local synthetic adapter. Not React 19/Spring/PostgreSQL proof. |
-| Showcase accounting ZIP and original hash | **Passed within browser checks** | Archive integrity and synthetic original SHA-256 were checked. Not an execution of the Spring export service. |
-| Documentation browser checks | **Passed** | `documentation-browser.json`; 12 guide views in each language, search, mobile layout and landing-page language controls. |
-| Static checks | **Passed** | Java parse-only, frontend syntax parsing, JSON/XML/YAML parsing, shell syntax and local documentation links. Syntax parsing is not dependency resolution or compilation of Spring tests. |
+| Java domain policy/parser/file checks | 306/306 passed | JDK 21-compatible offline harness; not the Spring/JDK 25 build |
+| Client core tests | 92/92 passed | Local Node 22 strip-types harness; not the pinned Node 24 production toolchain |
+| Report-gate self-tests | 9/9 passed | Synthetic report fixtures only, never application results |
+| Documentation browser checks | 7/7 passed | System Chromium; English/German routing, search, mobile overflow and landing-page controls only |
+| Local TypeScript check | Passed | Installed compiler; not a substitute for the pinned production toolchain |
 
-The core domain result comprises the original 82 cases plus an independently defined 224-case role/state/action matrix. Node and Vitest reuse the same frontend core case bodies; do not count them as twice as many distinct specifications. Browser checks include real rendered dialogs and some store-driven navigation, German layout, dark mode and mobile panes. No uncaught compatibility page errors occurred.
+The archived local logs are `domain-local.log`, `frontend-local.log`, and `quality-gate-local.log`; documentation-only browser results are in `documentation-browser-0.2.1.json`. Final package checks are recorded in `package-validation.json` after packaging. No results are invented for unavailable dependencies.
 
-## Supplied but not executed in the supported full stack here
+### 3. Still requires the real networked environment
 
-| Suite | Declared cases | Required environment |
+| Suite / gate | Declared cases or requirement | Current status |
 |---|---:|---|
-| Server unit and configuration tests | 132 | Maven, Java 25, Spring/JUnit/Mockito dependencies; four load real Jackson configuration without a database. |
-| Real PostgreSQL integration | 47 | Three suites: original 15, module contracts 29, independent-connection concurrency 3. |
-| React component tests | 132 | Configured React 19.3.0, Vitest/jsdom/Testing Library dependencies. |
-| Real application browser journeys | 14 | Built React/Spring application and disposable PostgreSQL, actual Playwright Chromium. |
+| Server unit/configuration suite | 138 (132 existing + 6 multipart regressions) | Not executed here |
+| PostgreSQL integration | 47 | Not executed here |
+| Real React component suite on 0.2.1 | 132 | Not rerun here; passed for unchanged component source in supplied 0.2.0 logs |
+| Real-application Playwright | 14 | Not executed here |
+| Complete Spring/JDK 25 build | Maven + pinned dependencies | Not executed here |
+| Backend measured coverage | JaCoCo | Unknown until full-stack execution |
 
-The 306 domain cases also have a JUnit factory, but that factory was not executed locally. The complete Java 25 / Spring Boot 4.1.1 / PostgreSQL 18.6 / TypeScript 7.0.2 / React 19.3.0 / Vite 8.3.4 build is not newly verified by this report. Docker startup, fresh migrations, real coverage percentages, penetration/accessibility audits, production restoration and load/soak testing are not claimed as executed.
+This authoring environment has no Maven, Docker, or PostgreSQL, has JDK 21 instead of JDK 25, and cannot resolve the Maven/npm registries. A source review and the official API hierarchy support the correction, but are not a compiler or runtime test. **The six new Spring regressions and the complete corrected build must pass CI before release.**
 
-The authoring container has no Maven, Docker, PostgreSQL or downloadable npm/Maven dependency graph. Networked tools therefore must run the supplied full verification before a customer release. A version source page is not a build result. No lockfile, SBOM, image digest or green CI badge was invented. The added server/test Java was syntax-parsed, not type-checked against unavailable libraries.
+The earlier 17 compatibility-browser checks are historical evidence for the standalone showcase; they have not been rerun for this repair and are not real-server tests. Their historical JSON artifacts remain labelled as compatibility evidence.
 
-## Root cause fixed from the uploaded run
+## Reproduce the focused check
 
-The provided log `full-stack/8_Spring, domain and real PostgreSQL integration tests.txt`, line 1347, reports:
-
-```text
-No enum constant tools.jackson.databind.SerializationFeature.write-dates-as-timestamps
-```
-
-The old Jackson 2 serialization property prevented Spring's context from starting. Its 15 integration errors shared this cause. The revised YAML configures `spring.jackson.datatype.datetime.write-dates-as-timestamps: false`; the old property must also be removed from environment overrides. `JacksonConfigurationTest` loads the actual application YAML, tests ISO date/instant output and intentionally reproduces the old failure.
-
-Separate historical evidence from the uploaded v0.1.0 run: 82 domain cases passed; 12 server adapter cases passed; 24 frontend core cases and the production frontend build passed; 15 database integration methods errored during context startup. These are not pass results for newly changed source.
-
-## Reproduce all layers and collect evidence
-
-Windows, from the revised repository root:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\verify-all.ps1
-```
-
-Linux/macOS/WSL with Docker:
+From the repository root, with JDK 25 and registry access:
 
 ```bash
-docker compose -f compose.quality.yml down
-docker compose -f compose.quality.yml up --build --abort-on-container-exit --exit-code-from verifier
+./mvnw --batch-mode --no-transfer-progress test-compile
+./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
 ```
 
-Use only the dedicated disposable quality stack. It has no application-data volume. Inspect `quality-results/` and the process exit status before removing the test stack. Strict coverage: PowerShell `-StrictCoverage`, or `BF_STRICT_COVERAGE=true` in the quality environment. Targets are 80% lines and 70% branches (frontend also 80% functions/statements), not measured results. A plain `mvn verify` may skip database tests; the full verification command rejects that condition.
+The selector's `surefire.failIfNoSpecifiedTests=false` permits the domain module (which has neither selected class) to participate in the reactor; it does not suppress failed tests or compilation errors. Do not use `maven.test.skip=true` as a workaround.
 
-The CI has a first database-free configuration-regression job, a frontend/coverage/build job, and a dependent real full-stack job. Review and commit its generated lockfile, rerun from that commit and retain the reports. Do not display a passing badge or describe the package as production-certified before actual evidence supports it.
+For all layers, use the documented `compose.quality.yml` or `scripts/verify-all.ps1` route with a disposable database, then inspect the uploaded `full-stack-verification` artifacts.
 
-## Coverage of module contracts
+## Data and release safety
 
-See [test matrix](TEST_MATRIX.md) and [machine-readable case inventory](test-inventory.json). Every implemented backend package and frontend feature has named tests, including negative authorization, invalid input, stale response/version, independent approval and export retry paths. This is broad module coverage by test design, not proof that every branch or possible input has been exercised. A passing automated suite does not replace a security, accessibility, accounting or legal review.
+No Flyway migration, invoice business rule, or authorization rule changed. Preserve the existing database volume and deployment secrets. Keep intentional repository changes and any existing reviewed `frontend/package-lock.json`; its top-level package version should be updated to 0.2.1 without unnecessarily re-resolving dependencies. Re-run with `npm ci` after committing the lockfile.
 
-## Deutsch: Ergebnis und Grenze
+Manual security/accessibility/privacy review, TLS/secrets configuration, restore verification, accountant handoff review, and dependency/license review remain release requirements. No DATEV integration or legal certification is claimed.
 
-Tatsächlich lokal erfolgreich: 306 Java-Domänenfälle, 92 Client-Core-Fälle, 9 Tests der Berichtskontrolle, strikte lokale TypeScript-Prüfung und 17 begrenzte Browser-Kompatibilitätsprüfungen. Die Vorschau verwendet React 16 und einen simulierten Adapter; sie beweist keinen Produktivbetrieb mit React 19, Spring oder PostgreSQL.
+## Zusammenfassung auf Deutsch
 
-132 Server-Unit-/Konfigurationsfälle, 47 echte Datenbankfälle, 132 React-Komponentenfälle und 14 echte Browser-Journeys sind enthalten, hier aber nicht mit ihren vollständigen Abhängigkeiten ausgeführt. Maven, Docker, PostgreSQL und Registry-Zugriff fehlen in der Erstellungsumgebung. Keine bestandene CI, Coverage-Prozentwerte oder Lockdatei werden erfunden.
+Der neue Fehler liegt im Testcode: `pdf(String)` muss `MockMultipartHttpServletRequestBuilder` zurückgeben. Der Jackson-Test wurde im hochgeladenen Lauf wegen des vorherigen Kompilierungsfehlers nicht ausgeführt. Der Frontend-Lauf war erfolgreich: 224 Tests, TypeScript-Prüfung und Produktions-Build; die gemessene Zeilen-Coverage beträgt 87,38 %. Diese Werte stammen aus dem bereitgestellten 0.2.0-Protokoll, nicht aus einem vollständigen 0.2.1-Lauf.
 
-Der hochgeladene Altfehler stammt aus einer Jackson-2-Konfiguration in Jackson 3. Die korrigierte YAML-Datei und datenbankfreien Regressionstests sind enthalten. Das Upgrade verlangt keine geänderte Migration und keinen Datenreset. Vor Freigabe den isolierten Gesamtlauf ausführen, die Lockdatei prüfen/committen und Berichte sowie manuelle Sicherheits-/Betriebsprüfungen bewerten. Anleitung: [Tests auf Deutsch](../de/TESTING.md).
+Lokal wurden für 0.2.1 erneut 306 Domänenfälle, 92 Client-Kerntests und 9 Berichtskontrollen ausgeführt. Die sechs neuen Multipart-Tests sowie der vollständige Spring-/PostgreSQL-/Browser-Lauf bleiben bis zur CI-Ausführung offen. Es ist keine Datenbankmigration und kein Zurücksetzen der Daten erforderlich.

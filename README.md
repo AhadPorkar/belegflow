@@ -7,14 +7,14 @@ A bilingual, evidence-first invoice-review application for multi-team service bu
 
 ![BelegFlow workspace](docs/screenshots/workspace-en.png)
 
-**Release: 0.2.0 engineering candidate.** This is application source, not a certified commercial release. This revision fixes the Jackson configuration startup error and expands every implemented module's tests. Locally executed: 306 domain checks, 92 client core tests and 17 compatibility browser checks. The new Spring/PostgreSQL and React component/production browser suites still require the included networked verification run. Read the verification report before presenting deployment claims.
+**Release: 0.2.1 engineering candidate.** Repairs the multipart test-compiler error in uploaded CI run 106020289651. That run confirms 224 frontend tests, type checking and a production build passed (87.38% line coverage). Locally rerun for this patch: 306 domain checks, 92 client core cases and 9 report-gate checks. The corrected Spring/JDK 25 build, six new multipart regressions, PostgreSQL and production-browser suites still need execution. Read the [verification report](docs/testing/VERIFICATION.md) before making deployment claims.
 
 
-## Version 0.2.0: full-module test and documentation package
+## Version 0.2.1: compiler repair and full-module test package
 
 [All module contracts](docs/en/MODULE_REFERENCE.md) | [Testing commands](docs/en/TESTING.md) | [Error diagnosis / upgrade](docs/en/TROUBLESHOOTING.md) | [Case matrix](docs/testing/TEST_MATRIX.md) | [Bilingual HTML handbook](docs/BelegFlow-Handbook.html)
 
-The declared suites contain 306 domain, 132 server unit/configuration, 47 PostgreSQL integration, 92 frontend core, 132 React component and 14 real-application E2E cases. These are not all locally executed results; see the verification report. JaCoCo/V8 measure coverage and the explicit release mode enforces targets. A skipped integration suite cannot pass the full-stack gate.
+The declared suites contain 306 domain, 138 server unit/configuration, 47 PostgreSQL integration, 92 frontend core, 132 React component and 14 real-application E2E cases. These are not all locally executed results; see the verification report. JaCoCo/V8 measure coverage and the explicit release mode enforces targets. A skipped integration suite cannot pass the full-stack gate.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\verify-all.ps1

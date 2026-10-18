@@ -1,0 +1,14 @@
+{
+  "release": "0.2.1",
+  "checks": {
+    "minimal_hotfix_applies_to_original": true,
+    "frontend_source_and_tests_identical_to_0_2_0": 32,
+    "frontend_dependencies_unchanged": true,
+    "flyway_migrations_unchanged": 1,
+    "new_multipart_test_methods_declared": 6,
+    "new_multipart_tests_executed": false,
+    "production_build_executed_here": false,
+    "json_and_pom_syntax_valid": true
+  },
+  "scope": "Package/source integrity checks, not proof of the full Spring/PostgreSQL build."
+}

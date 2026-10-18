@@ -18,7 +18,7 @@ import java.util.*;
         return Map.of("token",token.getToken(),"headerName",token.getHeaderName());
     }
     @GetMapping("/public/config") public Map<String,Object> config() {
-        return Map.of("demo",demo,"version","0.2.0","defaultLocale","en");
+        return Map.of("demo",demo,"version","0.2.1","defaultLocale","en");
     }
     @GetMapping("/session") public Map<String,Object> session() {
         var a=identity.actor();
