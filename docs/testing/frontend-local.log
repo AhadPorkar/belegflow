@@ -1,0 +1,156 @@
+TAP version 13
+# (node:4734) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: money: decimal arithmetic uses integer cents
+ok 1 - money: decimal arithmetic uses integer cents
+  ---
+  duration_ms: 0.956229
+  type: 'test'
+  ...
+# Subtest: money: invalid values and precision rejected
+ok 2 - money: invalid values and precision rejected
+  ---
+  duration_ms: 0.221053
+  type: 'test'
+  ...
+# Subtest: money: EUR-only positive totals
+ok 3 - money: EUR-only positive totals
+  ---
+  duration_ms: 0.196165
+  type: 'test'
+  ...
+# Subtest: format: UI language separate from money locale
+ok 4 - format: UI language separate from money locale
+  ---
+  duration_ms: 18.398501
+  type: 'test'
+  ...
+# Subtest: dates: stable date-only and Berlin midnight
+ok 5 - dates: stable date-only and Berlin midnight
+  ---
+  duration_ms: 8.064869
+  type: 'test'
+  ...
+# Subtest: dates: DST transitions display Europe/Berlin
+ok 6 - dates: DST transitions display Europe/Berlin
+  ---
+  duration_ms: 0.369686
+  type: 'test'
+  ...
+# Subtest: avatar: initials support Unicode and blanks
+ok 7 - avatar: initials support Unicode and blanks
+  ---
+  duration_ms: 2.341702
+  type: 'test'
+  ...
+# Subtest: CSV: formulas and quotation marks neutralized
+ok 8 - CSV: formulas and quotation marks neutralized
+  ---
+  duration_ms: 0.273851
+  type: 'test'
+  ...
+# Subtest: i18n: dictionaries have exactly matching keys
+ok 9 - i18n: dictionaries have exactly matching keys
+  ---
+  duration_ms: 0.959703
+  type: 'test'
+  ...
+# Subtest: i18n: every translation is nonempty and placeholders match
+ok 10 - i18n: every translation is nonempty and placeholders match
+  ---
+  duration_ms: 3.797561
+  type: 'test'
+  ...
+# Subtest: i18n: interpolation and safe unknown error
+ok 11 - i18n: interpolation and safe unknown error
+  ---
+  duration_ms: 0.245009
+  type: 'test'
+  ...
+# Subtest: store: English is initial default
+ok 12 - store: English is initial default
+  ---
+  duration_ms: 2.269313
+  type: 'test'
+  ...
+# Subtest: store: subscription receives immutable state and can unsubscribe
+ok 13 - store: subscription receives immutable state and can unsubscribe
+  ---
+  duration_ms: 0.245449
+  type: 'test'
+  ...
+# Subtest: store: bootstrap loads authenticated catalog and list
+ok 14 - store: bootstrap loads authenticated catalog and list
+  ---
+  duration_ms: 0.46541
+  type: 'test'
+  ...
+# Subtest: store: unauthenticated bootstrap shows login, not a hidden demo
+ok 15 - store: unauthenticated bootstrap shows login, not a hidden demo
+  ---
+  duration_ms: 0.27256
+  type: 'test'
+  ...
+# Subtest: store: network failure never silently selects demo API
+ok 16 - store: network failure never silently selects demo API
+  ---
+  duration_ms: 0.19289
+  type: 'test'
+  ...
+# Subtest: store: dialog captures invoice version
+ok 17 - store: dialog captures invoice version
+  ---
+  duration_ms: 0.14625
+  type: 'test'
+  ...
+# Subtest: store: interface locale is independent from number formatting
+ok 18 - store: interface locale is independent from number formatting
+  ---
+  duration_ms: 0.144007
+  type: 'test'
+  ...
+# Subtest: store: logging out invalidates outstanding catalogue responses
+ok 19 - store: logging out invalidates outstanding catalogue responses
+  ---
+  duration_ms: 2.464276
+  type: 'test'
+  ...
+# Subtest: store: late selection response cannot overwrite a newer selection
+ok 20 - store: late selection response cannot overwrite a newer selection
+  ---
+  duration_ms: 0.242835
+  type: 'test'
+  ...
+# Subtest: HTTP: unsafe methods obtain and send CSRF token
+ok 21 - HTTP: unsafe methods obtain and send CSRF token
+  ---
+  duration_ms: 22.86566
+  type: 'test'
+  ...
+# Subtest: HTTP: non-JSON errors are not treated as successful responses
+ok 22 - HTTP: non-JSON errors are not treated as successful responses
+  ---
+  duration_ms: 0.560853
+  type: 'test'
+  ...
+# Subtest: HTTP: structured business errors preserved
+ok 23 - HTTP: structured business errors preserved
+  ---
+  duration_ms: 0.402125
+  type: 'test'
+  ...
+# Subtest: showcase ZIP: signatures and central directory
+ok 24 - showcase ZIP: signatures and central directory
+  ---
+  duration_ms: 0.340111
+  type: 'test'
+  ...
+1..24
+# tests 24
+# suites 0
+# pass 24
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 218.941705

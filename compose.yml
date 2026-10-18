@@ -1,0 +1,35 @@
+name: belegflow-demo
+services:
+  db:
+    image: postgres:18.6
+    environment:
+      POSTGRES_DB: belegflow
+      POSTGRES_USER: belegflow
+      POSTGRES_PASSWORD: ${BF_DATABASE_PASSWORD:?Run scripts/start-demo.sh or scripts/start-demo.ps1 first}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U belegflow -d belegflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  app:
+    build: .
+    image: belegflow:0.1.0
+    ports: ["127.0.0.1:8080:8080"]
+    environment:
+      BF_DATABASE_URL: jdbc:postgresql://db:5432/belegflow
+      BF_DATABASE_USER: belegflow
+      BF_DATABASE_PASSWORD: ${BF_DATABASE_PASSWORD}
+      BF_DEMO: "true"
+      BF_COOKIE_SECURE: "false"
+    depends_on:
+      db: {condition: service_healthy}
+    read_only: true
+    tmpfs: [/tmp]
+    security_opt: ["no-new-privileges:true"]
+    cap_drop: [ALL]
+    restart: unless-stopped
+volumes:
+  pgdata:

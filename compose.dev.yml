@@ -1,0 +1,4 @@
+# Optional local database port, never use on a public interface.
+services:
+  db:
+    ports: ["127.0.0.1:5432:5432"]

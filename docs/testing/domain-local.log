@@ -1,0 +1,83 @@
+PASS workflow: receive and review
+PASS workflow: review requires finance
+PASS workflow: cannot review approved
+PASS workflow: ready submission
+PASS workflow: basic validation gates submission
+PASS workflow: allocation gates submission
+PASS workflow: duplicate gates submission
+PASS workflow: open questions gate submission
+PASS workflow: evidence gates submission
+PASS workflow: optional evidence
+PASS workflow: self-assignment blocked
+PASS workflow: approver cannot submit
+PASS workflow: assigned approval
+PASS workflow: unrelated admin cannot first-approve
+PASS workflow: active delegation can approve
+PASS workflow: approval rejects viewer
+PASS workflow: creator admin cannot approve own upload
+PASS workflow: evidence checked again on approval
+PASS workflow: high-value first approval does not finalize
+PASS workflow: high-value admin finalizes
+PASS workflow: second signature needs admin
+PASS workflow: same admin cannot sign twice
+PASS workflow: clarification requires reason
+PASS workflow: assigned approver can clarify
+PASS workflow: unrelated approver cannot clarify
+PASS workflow: resolve needs all questions closed
+PASS workflow: clarification resolved
+PASS workflow: rejection
+PASS workflow: rejection needs reason
+PASS workflow: reason length bounded
+PASS workflow: rejected can reopen
+PASS workflow: approved is not rejectable
+PASS workflow: approved signed export
+PASS workflow: unsigned export blocked
+PASS workflow: second signature required for export
+PASS workflow: cannot export twice
+PASS workflow: viewer cannot export
+PASS roles: finance and admin permissions
+PASS money: exact decimal arithmetic
+PASS money: amount scale normalized
+PASS money: fraction rejected
+PASS money: localized input rejected
+PASS money: scientific notation rejected
+PASS money: blank and null rejected
+PASS money: database precision bound
+PASS money: mismatched total
+PASS money: EUR-only
+PASS money: negative and zero invoices blocked
+PASS money: threshold inclusive
+PASS money: invalid threshold rejected
+PASS duplicates: punctuation and case normalization
+PASS duplicates: Unicode compatibility normalization
+PASS duplicates: different suppliers are distinct
+PASS duplicates: standard SHA-256 vector
+PASS delegation: half-open interval
+PASS delegation: self delegation rejected
+PASS delegation: invalid interval rejected
+PASS reminder: Berlin midnight is previous UTC date
+PASS reminder: DST winter boundary
+PASS reminder: due horizon inclusive
+PASS CSV: quotes and multiline escaped
+PASS CSV: formula prefixes neutralized
+PASS CSV: BOM, delimiter and CRLF
+PASS files: original XML
+PASS files: PDF signature
+PASS files: mislabeled executable rejected
+PASS files: traversal rejected
+PASS files: control filename rejected
+PASS files: PNG allowed only as evidence
+PASS files: empty or oversized rejected
+PASS XML: UBL extraction
+PASS XML: CII extraction
+PASS XML: missing due date is recoverable
+PASS XML: before-issue due date flagged
+PASS XML: inconsistent totals flagged
+PASS XML: wrong namespace rejected
+PASS XML: malformed rejected
+PASS XML: external entity forbidden
+PASS XML: entity expansion forbidden
+PASS XML: credit note unsupported
+PASS XML: prepayment unsupported
+PASS XML: decimal scale bounded
+RESULT 82/82 passed

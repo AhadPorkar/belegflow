@@ -1,0 +1,76 @@
+{
+  "scope": "Offline compatibility showcase only; React 16 local runtime, in-memory storage and a SHA-256 test bridge. This does not verify the Spring/PostgreSQL/React 19 production build.",
+  "checks": [
+    {
+      "check": "English is the initial interface language",
+      "status": "passed"
+    },
+    {
+      "check": "Finance demo login loads the three-pane invoice workspace",
+      "status": "passed"
+    },
+    {
+      "check": "Submission is visibly blocked until service evidence is accepted",
+      "status": "passed"
+    },
+    {
+      "check": "Project approver accepts service evidence through the actual dialog",
+      "status": "passed"
+    },
+    {
+      "check": "Finance submits after the evidence gate is satisfied",
+      "status": "passed"
+    },
+    {
+      "check": "Independent approver moves invoice to approved",
+      "status": "passed"
+    },
+    {
+      "check": "Downloaded showcase accounting ZIP is readable and preserves the original SHA-256",
+      "status": "passed"
+    },
+    {
+      "check": "Administrator completes a high-value second approval",
+      "status": "passed"
+    },
+    {
+      "check": "Supplier, project, export, audit and settings screens render without runtime errors",
+      "status": "passed"
+    },
+    {
+      "check": "Clarification resolution clears the question and returns the invoice to review",
+      "status": "passed"
+    },
+    {
+      "check": "UBL fixture imports through the real upload form in the compatibility showcase",
+      "status": "passed"
+    },
+    {
+      "check": "Exact re-import reuses the same showcase invoice",
+      "status": "passed"
+    },
+    {
+      "check": "German workspace renders without horizontal overflow at 1440 px",
+      "status": "passed"
+    },
+    {
+      "check": "Dark theme renders with the same workspace structure",
+      "status": "passed"
+    },
+    {
+      "check": "390 px mobile inbox fits the viewport without horizontal overflow",
+      "status": "passed"
+    },
+    {
+      "check": "Mobile decision pane keeps the primary approval action visible",
+      "status": "passed"
+    },
+    {
+      "check": "No uncaught browser runtime errors during the compatibility journeys",
+      "status": "passed"
+    }
+  ],
+  "passed": 17,
+  "page_errors": [],
+  "browser": "144.0.7559.96"
+}
