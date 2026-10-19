@@ -1,572 +1,620 @@
 
-> belegflow-web@0.2.1 test:core
+> belegflow-web@0.2.2 test:core
 > node --experimental-strip-types --test tests/unit/*.test.mjs
 
 TAP version 13
-# (node:774) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (node:3089) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: money: decimal arithmetic uses integer cents
 ok 1 - money: decimal arithmetic uses integer cents
   ---
-  duration_ms: 1.800175
+  duration_ms: 3.919756
   type: 'test'
   ...
 # Subtest: money: invalid values and precision rejected
 ok 2 - money: invalid values and precision rejected
   ---
-  duration_ms: 0.319273
+  duration_ms: 0.753408
   type: 'test'
   ...
 # Subtest: money: EUR-only positive totals
 ok 3 - money: EUR-only positive totals
   ---
-  duration_ms: 0.323819
+  duration_ms: 0.607871
   type: 'test'
   ...
 # Subtest: format: UI language separate from money locale
 ok 4 - format: UI language separate from money locale
   ---
-  duration_ms: 34.217483
+  duration_ms: 65.902399
   type: 'test'
   ...
 # Subtest: dates: stable date-only and Berlin midnight
 ok 5 - dates: stable date-only and Berlin midnight
   ---
-  duration_ms: 5.247057
+  duration_ms: 11.055368
   type: 'test'
   ...
 # Subtest: dates: DST transitions display Europe/Berlin
 ok 6 - dates: DST transitions display Europe/Berlin
   ---
-  duration_ms: 0.336629
+  duration_ms: 0.581466
   type: 'test'
   ...
 # Subtest: avatar: initials support Unicode and blanks
 ok 7 - avatar: initials support Unicode and blanks
   ---
-  duration_ms: 0.214197
+  duration_ms: 0.553612
   type: 'test'
   ...
 # Subtest: CSV: formulas and quotation marks neutralized
 ok 8 - CSV: formulas and quotation marks neutralized
   ---
-  duration_ms: 0.404008
+  duration_ms: 1.118728
   type: 'test'
   ...
 # Subtest: i18n: dictionaries have exactly matching keys
 ok 9 - i18n: dictionaries have exactly matching keys
   ---
-  duration_ms: 1.269228
+  duration_ms: 2.547218
   type: 'test'
   ...
 # Subtest: i18n: every translation is nonempty and placeholders match
 ok 10 - i18n: every translation is nonempty and placeholders match
   ---
-  duration_ms: 2.967252
+  duration_ms: 5.620878
   type: 'test'
   ...
 # Subtest: i18n: interpolation and safe unknown error
 ok 11 - i18n: interpolation and safe unknown error
   ---
-  duration_ms: 0.269179
+  duration_ms: 0.526786
   type: 'test'
   ...
 # Subtest: store: English is initial default
 ok 12 - store: English is initial default
   ---
-  duration_ms: 0.313313
+  duration_ms: 1.020513
   type: 'test'
   ...
 # Subtest: store: subscription receives immutable state and can unsubscribe
 ok 13 - store: subscription receives immutable state and can unsubscribe
   ---
-  duration_ms: 0.231813
+  duration_ms: 0.250527
   type: 'test'
   ...
 # Subtest: store: bootstrap loads authenticated catalog and list
 ok 14 - store: bootstrap loads authenticated catalog and list
   ---
-  duration_ms: 0.490906
+  duration_ms: 1.227854
   type: 'test'
   ...
 # Subtest: store: unauthenticated bootstrap shows login, not a hidden demo
 ok 15 - store: unauthenticated bootstrap shows login, not a hidden demo
   ---
-  duration_ms: 0.301777
+  duration_ms: 0.49107
   type: 'test'
   ...
 # Subtest: store: network failure never silently selects demo API
 ok 16 - store: network failure never silently selects demo API
   ---
-  duration_ms: 0.194598
+  duration_ms: 0.301017
   type: 'test'
   ...
 # Subtest: store: dialog captures invoice version
 ok 17 - store: dialog captures invoice version
   ---
-  duration_ms: 0.137734
+  duration_ms: 0.334455
   type: 'test'
   ...
 # Subtest: store: interface locale is independent from number formatting
 ok 18 - store: interface locale is independent from number formatting
   ---
-  duration_ms: 0.176712
+  duration_ms: 0.390281
   type: 'test'
   ...
 # Subtest: store: logging out invalidates outstanding catalogue responses
 ok 19 - store: logging out invalidates outstanding catalogue responses
   ---
-  duration_ms: 0.726716
+  duration_ms: 0.835893
   type: 'test'
   ...
 # Subtest: store: late selection response cannot overwrite a newer selection
 ok 20 - store: late selection response cannot overwrite a newer selection
   ---
-  duration_ms: 0.259785
+  duration_ms: 1.182376
   type: 'test'
   ...
 # Subtest: HTTP: unsafe methods obtain and send CSRF token
 ok 21 - HTTP: unsafe methods obtain and send CSRF token
   ---
-  duration_ms: 40.030988
+  duration_ms: 57.597727
   type: 'test'
   ...
 # Subtest: HTTP: non-JSON errors are not treated as successful responses
 ok 22 - HTTP: non-JSON errors are not treated as successful responses
   ---
-  duration_ms: 1.004687
+  duration_ms: 3.768671
   type: 'test'
   ...
 # Subtest: HTTP: structured business errors preserved
 ok 23 - HTTP: structured business errors preserved
   ---
-  duration_ms: 0.599547
+  duration_ms: 1.532619
   type: 'test'
   ...
 # Subtest: showcase ZIP: signatures and central directory
 ok 24 - showcase ZIP: signatures and central directory
   ---
-  duration_ms: 0.564326
+  duration_ms: 0.616191
   type: 'test'
   ...
-# (node:775) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (node:3090) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: HTTP: GET does not request CSRF and disables caching
 ok 25 - HTTP: GET does not request CSRF and disables caching
   ---
-  duration_ms: 54.369914
+  duration_ms: 62.59414
   type: 'test'
   ...
 # Subtest: HTTP: multiple writes reuse the session CSRF token
 ok 26 - HTTP: multiple writes reuse the session CSRF token
   ---
-  duration_ms: 1.2026
+  duration_ms: 1.671503
   type: 'test'
   ...
 # Subtest: HTTP: request serialization preserves money strings
 ok 27 - HTTP: request serialization preserves money strings
   ---
-  duration_ms: 0.894053
+  duration_ms: 1.169257
   type: 'test'
   ...
 # Subtest: HTTP: multipart does not force JSON content type
 ok 28 - HTTP: multipart does not force JSON content type
   ---
-  duration_ms: 1.116703
+  duration_ms: 1.433512
   type: 'test'
   ...
 # Subtest: HTTP: network exception is normalized
 ok 29 - HTTP: network exception is normalized
   ---
-  duration_ms: 1.728969
+  duration_ms: 1.676595
   type: 'test'
   ...
 # Subtest: HTTP: empty 204 is accepted
 ok 30 - HTTP: empty 204 is accepted
   ---
-  duration_ms: 1.070505
+  duration_ms: 1.10628
   type: 'test'
   ...
 # Subtest: HTTP: unknown JSON error uses generic code
 ok 31 - HTTP: unknown JSON error uses generic code
   ---
-  duration_ms: 1.058817
+  duration_ms: 1.270989
   type: 'test'
   ...
 # Subtest: HTTP: login rotates token after Spring session authentication
 ok 32 - HTTP: login rotates token after Spring session authentication
   ---
-  duration_ms: 2.866042
+  duration_ms: 2.66068
   type: 'test'
   ...
 # Subtest: HTTP: unauthorized response clears old CSRF token
 ok 33 - HTTP: unauthorized response clears old CSRF token
   ---
-  duration_ms: 2.862257
+  duration_ms: 2.298754
   type: 'test'
   ...
 # Subtest: HTTP download: 401 maps to AUTH_REQUIRED
 ok 34 - HTTP download: 401 maps to AUTH_REQUIRED
   ---
-  duration_ms: 1.017827
+  duration_ms: 5.247972
   type: 'test'
   ...
 # Subtest: HTTP download: 403 maps to FORBIDDEN
 ok 35 - HTTP download: 403 maps to FORBIDDEN
   ---
-  duration_ms: 0.668199
+  duration_ms: 1.815043
   type: 'test'
   ...
 # Subtest: HTTP download: 404 maps to NOT_FOUND
 ok 36 - HTTP download: 404 maps to NOT_FOUND
   ---
-  duration_ms: 0.427483
+  duration_ms: 0.542336
   type: 'test'
   ...
 # Subtest: HTTP download: 500 maps to UNEXPECTED_ERROR
 ok 37 - HTTP download: 500 maps to UNEXPECTED_ERROR
   ---
-  duration_ms: 0.693066
+  duration_ms: 2.002922
   type: 'test'
   ...
 # Subtest: HTTP download: JSON business error is preserved
 ok 38 - HTTP download: JSON business error is preserved
   ---
-  duration_ms: 0.633748
+  duration_ms: 0.841889
   type: 'test'
   ...
 # Subtest: HTTP download: network failures are normalized
 ok 39 - HTTP download: network failures are normalized
   ---
-  duration_ms: 0.612626
+  duration_ms: 1.000229
   type: 'test'
   ...
 # Subtest: HTTP: failed CSRF fetch prevents unsafe request
 ok 40 - HTTP: failed CSRF fetch prevents unsafe request
   ---
-  duration_ms: 0.545768
+  duration_ms: 17.123683
   type: 'test'
   ...
-# (node:776) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# Subtest: HTTP: logout clears cached CSRF even with response 204
+ok 41 - HTTP: logout clears cached CSRF even with response 204
+  ---
+  duration_ms: 3.110766
+  type: 'test'
+  ...
+# Subtest: HTTP: logout clears cached CSRF even with response 500
+ok 42 - HTTP: logout clears cached CSRF even with response 500
+  ---
+  duration_ms: 5.710045
+  type: 'test'
+  ...
+# (node:3091) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
 # (Use `node --trace-warnings ...` to show where the warning was created)
 # Subtest: identity: successful login resets previous tenant data before the request completes
-ok 41 - identity: successful login resets previous tenant data before the request completes
+ok 43 - identity: successful login resets previous tenant data before the request completes
   ---
-  duration_ms: 4.503497
+  duration_ms: 10.39437
   type: 'test'
   ...
 # Subtest: identity: failed login never keeps the previous identity
-ok 42 - identity: failed login never keeps the previous identity
+ok 44 - identity: failed login never keeps the previous identity
   ---
-  duration_ms: 0.927203
+  duration_ms: 6.591398
   type: 'test'
   ...
 # Subtest: identity: logout invalidates an in-flight login response
-ok 43 - identity: logout invalidates an in-flight login response
+ok 45 - identity: logout invalidates an in-flight login response
   ---
-  duration_ms: 2.806184
+  duration_ms: 1.090237
   type: 'test'
   ...
 # Subtest: identity: revoked session removes all private state
-ok 44 - identity: revoked session removes all private state
+ok 46 - identity: revoked session removes all private state
   ---
-  duration_ms: 0.724322
+  duration_ms: 2.201756
   type: 'test'
   ...
 # Subtest: identity: production cannot use demo-role login
-ok 45 - identity: production cannot use demo-role login
+ok 47 - identity: production cannot use demo-role login
   ---
-  duration_ms: 0.759815
+  duration_ms: 1.327906
   type: 'test'
   ...
 # Subtest: identity: duplicate login click is ignored while busy
-ok 46 - identity: duplicate login click is ignored while busy
+ok 48 - identity: duplicate login click is ignored while busy
   ---
-  duration_ms: 0.728349
+  duration_ms: 0.963195
   type: 'test'
   ...
 # Subtest: workflow: review sends the current optimistic-lock version
-ok 47 - workflow: review sends the current optimistic-lock version
+ok 49 - workflow: review sends the current optimistic-lock version
   ---
-  duration_ms: 4.318743
+  duration_ms: 4.119868
   type: 'test'
   ...
 # Subtest: workflow: APPROVE opens explicit confirmation before sending
-ok 48 - workflow: APPROVE opens explicit confirmation before sending
+ok 50 - workflow: APPROVE opens explicit confirmation before sending
   ---
-  duration_ms: 0.506319
+  duration_ms: 1.061965
   type: 'test'
   ...
 # Subtest: workflow: REJECT opens explicit confirmation before sending
-ok 49 - workflow: REJECT opens explicit confirmation before sending
+ok 51 - workflow: REJECT opens explicit confirmation before sending
   ---
-  duration_ms: 0.5067
+  duration_ms: 0.70604
   type: 'test'
   ...
 # Subtest: workflow: CLARIFY opens explicit confirmation before sending
-ok 50 - workflow: CLARIFY opens explicit confirmation before sending
+ok 52 - workflow: CLARIFY opens explicit confirmation before sending
   ---
-  duration_ms: 0.438089
+  duration_ms: 3.28038
   type: 'test'
   ...
 # Subtest: workflow: REOPEN opens explicit confirmation before sending
-ok 51 - workflow: REOPEN opens explicit confirmation before sending
+ok 53 - workflow: REOPEN opens explicit confirmation before sending
   ---
-  duration_ms: 0.251202
+  duration_ms: 1.647693
   type: 'test'
   ...
 # Subtest: workflow: missing selected invoice does not issue a command
-ok 52 - workflow: missing selected invoice does not issue a command
+ok 54 - workflow: missing selected invoice does not issue a command
   ---
-  duration_ms: 0.415926
+  duration_ms: 1.882397
   type: 'test'
   ...
 # Subtest: workflow: stale version keeps the dialog and shows conflict
-ok 53 - workflow: stale version keeps the dialog and shows conflict
+ok 55 - workflow: stale version keeps the dialog and shows conflict
   ---
-  duration_ms: 17.170428
+  duration_ms: 40.074993
   type: 'test'
   ...
 # Subtest: workflow: double mutation click cannot create duplicate requests
-ok 54 - workflow: double mutation click cannot create duplicate requests
+ok 56 - workflow: double mutation click cannot create duplicate requests
   ---
-  duration_ms: 0.457687
+  duration_ms: 0.773585
   type: 'test'
   ...
 # Subtest: workflow: late completed mutation cannot repopulate a logged-out store
-ok 55 - workflow: late completed mutation cannot repopulate a logged-out store
+ok 57 - workflow: late completed mutation cannot repopulate a logged-out store
   ---
-  duration_ms: 0.337179
+  duration_ms: 1.923928
   type: 'test'
   ...
 # Subtest: module form: allocation PUT sends exact typed payload
-ok 56 - module form: allocation PUT sends exact typed payload
+ok 58 - module form: allocation PUT sends exact typed payload
   ---
-  duration_ms: 0.471649
+  duration_ms: 2.208648
   type: 'test'
   ...
 # Subtest: module form: acceptEvidence POST sends exact typed payload
-ok 57 - module form: acceptEvidence POST sends exact typed payload
+ok 59 - module form: acceptEvidence POST sends exact typed payload
   ---
-  duration_ms: 0.420813
+  duration_ms: 1.114975
   type: 'test'
   ...
 # Subtest: module form: duplicate POST sends exact typed payload
-ok 58 - module form: duplicate POST sends exact typed payload
+ok 60 - module form: duplicate POST sends exact typed payload
   ---
-  duration_ms: 0.42555
+  duration_ms: 1.463456
   type: 'test'
   ...
 # Subtest: module form: supplier POST sends exact typed payload
-ok 59 - module form: supplier POST sends exact typed payload
+ok 61 - module form: supplier POST sends exact typed payload
   ---
-  duration_ms: 0.639998
+  duration_ms: 1.972109
   type: 'test'
   ...
 # Subtest: module form: supplier PUT sends exact typed payload
-ok 60 - module form: supplier PUT sends exact typed payload
+ok 62 - module form: supplier PUT sends exact typed payload
   ---
-  duration_ms: 1.744247
+  duration_ms: 5.423446
   type: 'test'
   ...
 # Subtest: module form: project POST sends exact typed payload
-ok 61 - module form: project POST sends exact typed payload
+ok 63 - module form: project POST sends exact typed payload
   ---
-  duration_ms: 0.583243
+  duration_ms: 0.777226
   type: 'test'
   ...
 # Subtest: module form: costCenter POST sends exact typed payload
-ok 62 - module form: costCenter POST sends exact typed payload
+ok 64 - module form: costCenter POST sends exact typed payload
   ---
-  duration_ms: 0.59477
+  duration_ms: 5.873882
   type: 'test'
   ...
 # Subtest: module form: user POST sends exact typed payload
-ok 63 - module form: user POST sends exact typed payload
+ok 65 - module form: user POST sends exact typed payload
   ---
-  duration_ms: 0.833593
+  duration_ms: 1.717173
   type: 'test'
   ...
 # Subtest: module form: user PUT sends exact typed payload
-ok 64 - module form: user PUT sends exact typed payload
+ok 66 - module form: user PUT sends exact typed payload
   ---
-  duration_ms: 0.573509
+  duration_ms: 1.995399
   type: 'test'
   ...
 # Subtest: discussion: comment sends text and refreshes
-ok 65 - discussion: comment sends text and refreshes
+ok 67 - discussion: comment sends text and refreshes
   ---
-  duration_ms: 0.726656
+  duration_ms: 1.610563
   type: 'test'
   ...
 # Subtest: discussion: no detail means no comment request
-ok 66 - discussion: no detail means no comment request
+ok 68 - discussion: no detail means no comment request
   ---
-  duration_ms: 0.386672
+  duration_ms: 0.350275
   type: 'test'
   ...
 # Subtest: discussion: resolution preserves question and invoice identifiers
-ok 67 - discussion: resolution preserves question and invoice identifiers
+ok 69 - discussion: resolution preserves question and invoice identifiers
   ---
-  duration_ms: 0.589723
+  duration_ms: 0.646357
   type: 'test'
   ...
 # Subtest: documents: import rejects empty upload
-ok 68 - documents: import rejects empty upload
+ok 70 - documents: import rejects empty upload
   ---
-  duration_ms: 0.539699
+  duration_ms: 1.716558
   type: 'test'
   ...
 # Subtest: documents: XML upload uses multipart and selects imported record
-ok 69 - documents: XML upload uses multipart and selects imported record
+ok 71 - documents: XML upload uses multipart and selects imported record
   ---
-  duration_ms: 1.136893
+  duration_ms: 7.885799
   type: 'test'
   ...
 # Subtest: documents: identical import displays reused instead of imported
-ok 70 - documents: identical import displays reused instead of imported
+ok 72 - documents: identical import displays reused instead of imported
   ---
-  duration_ms: 0.801737
+  duration_ms: 2.34774
   type: 'test'
   ...
 # Subtest: documents: evidence uses captured invoice version even if selection changes
-ok 71 - documents: evidence uses captured invoice version even if selection changes
+ok 73 - documents: evidence uses captured invoice version even if selection changes
   ---
-  duration_ms: 0.660147
+  duration_ms: 1.56578
   type: 'test'
   ...
 # Subtest: accounting: export captures versions and reuses idempotency key after failure
-ok 72 - accounting: export captures versions and reuses idempotency key after failure
+ok 74 - accounting: export captures versions and reuses idempotency key after failure
   ---
-  duration_ms: 1.430758
+  duration_ms: 3.216758
   type: 'test'
   ...
 # Subtest: accounting: successful export downloads the persisted package
-ok 73 - accounting: successful export downloads the persisted package
+ok 75 - accounting: successful export downloads the persisted package
   ---
-  duration_ms: 0.669712
+  duration_ms: 2.095933
   type: 'test'
   ...
 # Subtest: accounting: empty export selection does not open a dialog
-ok 74 - accounting: empty export selection does not open a dialog
+ok 76 - accounting: empty export selection does not open a dialog
   ---
-  duration_ms: 0.311411
+  duration_ms: 0.305526
   type: 'test'
   ...
 # Subtest: accounting: export approved requests at most twenty items
-ok 75 - accounting: export approved requests at most twenty items
+ok 77 - accounting: export approved requests at most twenty items
   ---
-  duration_ms: 2.211994
+  duration_ms: 2.344161
   type: 'test'
   ...
 # Subtest: accounting: forbidden download becomes visible error
-ok 76 - accounting: forbidden download becomes visible error
+ok 78 - accounting: forbidden download becomes visible error
   ---
-  duration_ms: 0.43259
+  duration_ms: 9.230972
   type: 'test'
   ...
 # Subtest: settings: rules preserve decimal string
-ok 77 - settings: rules preserve decimal string
+ok 79 - settings: rules preserve decimal string
   ---
-  duration_ms: 0.474923
+  duration_ms: 10.721359
   type: 'test'
   ...
 # Subtest: settings: revoke uses only the delegation identifier
-ok 78 - settings: revoke uses only the delegation identifier
+ok 80 - settings: revoke uses only the delegation identifier
   ---
-  duration_ms: 0.576433
+  duration_ms: 2.760567
   type: 'test'
   ...
 # Subtest: delegation: browser-local timestamps are converted to ISO instants
-ok 79 - delegation: browser-local timestamps are converted to ISO instants
+ok 81 - delegation: browser-local timestamps are converted to ISO instants
   ---
-  duration_ms: 0.975344
+  duration_ms: 5.043928
   type: 'test'
   ...
 # Subtest: delegation: invalid date is a visible input error with no request
-ok 80 - delegation: invalid date is a visible input error with no request
+ok 82 - delegation: invalid date is a visible input error with no request
   ---
-  duration_ms: 0.59449
+  duration_ms: 1.199144
   type: 'test'
   ...
 # Subtest: notifications: manual run invokes endpoint
-ok 81 - notifications: manual run invokes endpoint
+ok 83 - notifications: manual run invokes endpoint
   ---
-  duration_ms: 0.463796
+  duration_ms: 1.062441
   type: 'test'
   ...
 # Subtest: notifications: mark-read reloads the user inbox
-ok 82 - notifications: mark-read reloads the user inbox
+ok 84 - notifications: mark-read reloads the user inbox
   ---
-  duration_ms: 0.447532
+  duration_ms: 1.707976
   type: 'test'
   ...
 # Subtest: notifications: late mark-read response cannot expose data after logout
-ok 83 - notifications: late mark-read response cannot expose data after logout
+ok 85 - notifications: late mark-read response cannot expose data after logout
   ---
-  duration_ms: 0.411228
+  duration_ms: 1.379565
   type: 'test'
   ...
 # Subtest: audit: navigation requests first page
-ok 84 - audit: navigation requests first page
+ok 86 - audit: navigation requests first page
   ---
-  duration_ms: 0.458218
+  duration_ms: 0.790165
   type: 'test'
   ...
 # Subtest: audit: pagination appends without duplicate ids
-ok 85 - audit: pagination appends without duplicate ids
+ok 87 - audit: pagination appends without duplicate ids
   ---
-  duration_ms: 0.562763
+  duration_ms: 2.526252
   type: 'test'
   ...
 # Subtest: audit: concurrent earlier-page requests are suppressed
-ok 86 - audit: concurrent earlier-page requests are suppressed
+ok 88 - audit: concurrent earlier-page requests are suppressed
   ---
-  duration_ms: 0.413002
+  duration_ms: 0.783289
   type: 'test'
   ...
 # Subtest: audit: earlier page arriving after logout is discarded
-ok 87 - audit: earlier page arriving after logout is discarded
+ok 89 - audit: earlier page arriving after logout is discarded
   ---
-  duration_ms: 0.421323
+  duration_ms: 1.647998
   type: 'test'
   ...
 # Subtest: navigation: approvals apply the correct server filter
-ok 88 - navigation: approvals apply the correct server filter
+ok 90 - navigation: approvals apply the correct server filter
   ---
-  duration_ms: 0.412421
+  duration_ms: 3.408094
   type: 'test'
   ...
 # Subtest: navigation: page cannot become negative
-ok 89 - navigation: page cannot become negative
+ok 91 - navigation: page cannot become negative
   ---
-  duration_ms: 0.480241
+  duration_ms: 2.53931
   type: 'test'
   ...
 # Subtest: navigation: latest filter response wins over a slow earlier response
-ok 90 - navigation: latest filter response wins over a slow earlier response
+ok 92 - navigation: latest filter response wins over a slow earlier response
   ---
-  duration_ms: 0.510596
+  duration_ms: 3.355076
   type: 'test'
   ...
 # Subtest: preferences: theme toggle and disposal are safe
-ok 91 - preferences: theme toggle and disposal are safe
+ok 93 - preferences: theme toggle and disposal are safe
   ---
-  duration_ms: 0.419161
+  duration_ms: 0.414397
   type: 'test'
   ...
 # Subtest: dialog: closing discards file and error
-ok 92 - dialog: closing discards file and error
+ok 94 - dialog: closing discards file and error
   ---
-  duration_ms: 0.40566
+  duration_ms: 0.317414
   type: 'test'
   ...
-1..92
-# tests 92
+# Subtest: identity: pending logout clears private data but keeps login busy until completion
+ok 95 - identity: pending logout clears private data but keeps login busy until completion
+  ---
+  duration_ms: 1.043873
+  type: 'test'
+  ...
+# Subtest: identity: manual and demo login cannot race an unfinished logout
+ok 96 - identity: manual and demo login cannot race an unfinished logout
+  ---
+  duration_ms: 1.657318
+  type: 'test'
+  ...
+# Subtest: identity: duplicate logout calls share one pending termination
+ok 97 - identity: duplicate logout calls share one pending termination
+  ---
+  duration_ms: 0.738588
+  type: 'test'
+  ...
+# Subtest: identity: failed logout leaves data cleared and releases login with a visible error
+ok 98 - identity: failed logout leaves data cleared and releases login with a visible error
+  ---
+  duration_ms: 0.553444
+  type: 'test'
+  ...
+# Subtest: identity: expired-session logout cannot leave the pending-login guard stuck
+ok 99 - identity: expired-session logout cannot leave the pending-login guard stuck
+  ---
+  duration_ms: 0.785878
+  type: 'test'
+  ...
+# Subtest: identity: an old login response cannot unlock a later pending logout
+ok 100 - identity: an old login response cannot unlock a later pending logout
+  ---
+  duration_ms: 1.030197
+  type: 'test'
+  ...
+1..100
+# tests 100
 # suites 0
-# pass 92
+# pass 100
 # fail 0
 # cancelled 0
 # skipped 0
 # todo 0
-# duration_ms 344.80256
+# duration_ms 932.889014

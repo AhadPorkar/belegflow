@@ -46,7 +46,7 @@ export function Login({ state: s, store }) {
 </span>
 <h2>{t('welcome')}</h2>
 <p>{t('signIn')}</p>
-<form onSubmit={e => {
+<form aria-busy={s.busy} onSubmit={e => {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         store.login(String(fd.get('email')), String(fd.get('password')));

@@ -22,7 +22,7 @@ Use the latest stable supported compatible release, not every newest non-LTS or 
 
 Spring BOM-managed versions are not individually overridden. npm's top-level dependencies are exact; the transitive lockfile still requires the first networked resolution and review. Eclipse Temurin images use the 25 LTS family tag to receive vendor patches; production release must record and pin tested digests. The GitHub runner uses a moving hosted image and action release tags, not immutable commit hashes; tighten these to approved hashes/digests as part of the release gate.
 
-**Actual local tools:** JDK 21.0.11, Node 22.16.0, TypeScript 5.8.3 and a bundled React/ReactDOM 16.0.0 compatibility renderer. These tools exercised only the documented local scopes. They were not substituted into production manifests, and their success does not verify the configured modern dependency matrix.
+**Actual local tools:** JDK 21.0.12.1, Node 22.16.0, TypeScript 5.8.3 and a bundled React/ReactDOM 16.0.0 compatibility renderer. These tools exercised only the documented local scopes. They were not substituted into production manifests, and their success does not verify the configured modern dependency matrix.
 
 
 ## Test tool additions in 0.2.0
@@ -36,3 +36,7 @@ Spring BOM-managed versions are not individually overridden. npm's top-level dep
 | JaCoCo | 0.8.15 | https://www.jacoco.org/jacoco/trunk/doc/changes.html |
 
 Exact dependencies are declared; new test packages were not downloaded in the authoring environment. Resolve, review and commit the lockfile, then run the configured toolchain and security checks. No all-package compatibility claim is made before that run.
+
+## 0.2.2 patch scope
+
+No dependency versions were changed. The provided 0.2.1 CI logs demonstrate a successful backend build and frontend build; two real-browser cases failed. This is stronger evidence than the original source-only compatibility review, but not a completed 0.2.2 production verification.

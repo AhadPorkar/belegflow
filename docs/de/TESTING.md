@@ -1,6 +1,6 @@
 # Tests, Coverage und Freigabeprüfung
 
-Version 0.2.1 | [English](../en/TESTING.md) | [Modulreferenz](MODULE_REFERENCE.md) | [Tatsächliche Ergebnisse](../testing/VERIFICATION.md)
+Version 0.2.2 | [English](../en/TESTING.md) | [Modulreferenz](MODULE_REFERENCE.md) | [Tatsächliche Ergebnisse](../testing/VERIFICATION.md)
 
 ## Umfang der Modulprüfung
 
@@ -13,7 +13,7 @@ Eine Fallliste ist keine gemessene Coverage. Ein gemockter Service führt keine 
 Docker Engine/Desktop mit Compose und Netzwerkzugriff auf die verwendeten Registries installieren. Für diesen Weg sind Java, Maven und Node auf dem Host nicht erforderlich. Im Repository-Hauptverzeichnis ausführen:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scriptserify-all.ps1
+powershell -ExecutionPolicy Bypass -File .\scripts\verify-all.ps1
 ```
 
 ```bash
@@ -26,7 +26,7 @@ docker compose -f compose.quality.yml down
 
 Das Projekt `belegflow-quality` verwendet `belegflow_test` auf einem temporären PostgreSQL-Dateisystem. Es greift nicht auf das Anwendungsvolume `pgdata` zu und veröffentlicht keinen Datenbankport. Das bekannte Testpasswort ist kein Produktionsgeheimnis. Der Helfer verlangt `BF_TEST_DATABASE_ACK=DISPOSABLE` und lehnt andere Datenbanknamen ab. Nebenläufigkeitstests dürfen ihre synthetischen Zeilen bis zum Entfernen dieses Teststacks behalten.
 
-Der Lauf installiert Abhängigkeiten, prüft Typen, führt Core-/React-Tests mit V8-Coverage aus, baut den echten React-Client, prüft Maven/JUnit/PostgreSQL mit JaCoCo, kontrolliert die Ausführung aller Datenbanksuites, startet das gebaute Spring-Artefakt und führt 14 echte Browser-Spezifikationen aus. Fehler stoppen den Lauf; vorhandene Berichte werden trotzdem gesammelt. Die Offline-Demo ersetzt keinen fehlgeschlagenen Build.
+Der Lauf installiert Abhängigkeiten, prüft Typen, führt Core-/React-Tests mit V8-Coverage aus, baut den echten React-Client, prüft Maven/JUnit/PostgreSQL mit JaCoCo, kontrolliert die Ausführung aller Datenbanksuites, startet das gebaute Spring-Artefakt und führt 25 echte Browser-Spezifikationen aus. Fehler stoppen den Lauf; vorhandene Berichte werden trotzdem gesammelt. Die Offline-Demo ersetzt keinen fehlgeschlagenen Build.
 
 ## Befehle nach Schicht
 
@@ -35,10 +35,10 @@ Der Lauf installiert Abhängigkeiten, prüft Typen, führt Core-/React-Tests mit
 | Domäne ohne Downloads | `sh scripts/test-domain-offline.sh` | 306 deterministische Fälle mit JDK 21+ kompatiblem Helfer. |
 | Konfigurationsregression | `./mvnw -Dtest=JacksonConfigurationTest -Dsurefire.failIfNoSpecifiedTests=false test` | Wirkliches YAML, ISO-Daten und reproduzierter Altfehler. |
 | Backend-Units | `./mvnw test` | Domänen- und Server-Units; Datenbanktests benötigen das explizite Flag. |
-| Frontend-Core | `cd frontend && npm run test:core` | 92 Fälle für HTTP, Zustand, Formatierung und Sprache. |
-| React-Komponenten | `cd frontend && npm run test:components` | 132 expandierte Fälle mit React und jsdom. |
+| Frontend-Core | `cd frontend && npm run test:core` | 100 Fälle für HTTP, Zustand, Formatierung und Sprache. |
+| React-Komponenten | `cd frontend && npm run test:components` | 140 expandierte Fälle mit React und jsdom. |
 | Frontend-Coverage | `cd frontend && npm run test:coverage` | Node- und DOM-Projekte, einschließlich nicht importierter Produktivdateien. |
-| Echte Browser-Journeys | `cd frontend && npm run test:e2e` | 14 Spezifikationen gegen die laufende Anwendung, nicht DemoApi. |
+| Echte Browser-Journeys | `cd frontend && npm run test:e2e` | 25 Spezifikationen gegen die laufende Anwendung, nicht DemoApi. |
 | Gesamtlauf | `sh scripts/verify-all.sh` | Alle Schichten mit vorbereiteter Toolchain und wegwerfbarer Datenbank. |
 
 Keine parallelen Gesamtläufe gegen dieselbe Datenbank starten. Fachliches Verhalten darf nicht von der Testreihenfolge abhängen. Transaktionale Datenbankfälle rollen zurück; Nebenläufigkeitstests verwenden eigene Organisationen. Browserformulare erzeugen eindeutig benannte Testdaten. Der automatische Erinnerungsjob ist während der Tests verzögert; spezielle Tests rufen ihn gezielt auf.
@@ -84,5 +84,13 @@ Tastatur/Screenreader, Barrierefreiheit, Bedrohungsmodell, Abhängigkeiten/Lizen
 ./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
 ```
 
-Der neue Test verwendet die tatsächliche Hilfsmethode und simuliert nur SQL-Nachschlagewerte. Er ersetzt keine PostgreSQL-Integration. Die Ausführung im vorgesehenen Stack bleibt erforderlich; siehe [Prüfgrenzen](../testing/VERIFICATION.md).
+Der Test verwendet die tatsächliche Hilfsmethode und simuliert nur SQL-Nachschlagewerte. Er ersetzt keine PostgreSQL-Integration. Diese Regression bestand im bereitgestellten 0.2.1-Lauf; die neue Revision benötigt dennoch einen erneuten Gesamtlauf. Siehe [Prüfgrenzen](../testing/VERIFICATION.md).
 
+
+## Browserregressionen in 0.2.2
+
+Aktuell deklariert: 100 Client-Core-, 140 React-Komponenten- und 25 echte Server-E2E-Fälle. Die neuen Server-Browserfälle behandeln fünf Fensterformate in EN/DE und eine gezielt verzögerte Abmeldung, die weiterhin den echten Server erreicht. Die Administration wartet auf die erfolgreiche Antwort und prüft eine anonyme Sitzung. Die Freigabegrenze wird in `finally` wiederhergestellt. Exakte Labels bleiben Pflicht.
+
+Der bereitgestellte 0.2.1-Lauf beweist inzwischen Testkompilierung, alle 491 Backend- und 224 Frontend-Fälle; nur zwei Browserfälle scheiterten. Die aktuelle Revision besitzt getrennt ausgewiesene lokale Ergebnisse, noch keinen kompletten Produktionslauf. Siehe [Prüfbericht](../testing/VERIFICATION.md). Optional läuft `python scripts/test-ui-regressions.py` mit Python Playwright und Chromium. Diese 13 Fälle und die 17 bisherigen Vorschauprüfungen sind keine echten Server-E2E-Ergebnisse.
+
+Reine Dokumentationsprüfung im Browser: `python scripts/test-handbook.py` prüft sieben EN/DE-Szenarien für Navigation, Suche, Nachweise und mobiles Layout. Python Playwright und Chromium sind erforderlich; diese Ergebnisse sind keine Anwendungs-E2E-Coverage.

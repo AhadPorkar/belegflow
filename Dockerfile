@@ -19,7 +19,7 @@ RUN chmod +x mvnw && ./mvnw --batch-mode --no-transfer-progress verify     && ja
 FROM eclipse-temurin:25-jre-noble AS runtime
 RUN groupadd --gid 10001 belegflow && useradd --uid 10001 --gid 10001 --no-create-home belegflow
 WORKDIR /app
-COPY --from=build --chown=10001:10001 /src/server/target/belegflow-server-0.2.1.jar app.jar
+COPY --from=build --chown=10001:10001 /src/server/target/belegflow-server-0.2.2.jar app.jar
 COPY --from=build --chown=10001:10001 /tmp/Healthcheck.class /opt/belegflow-health/Healthcheck.class
 USER 10001:10001
 EXPOSE 8080

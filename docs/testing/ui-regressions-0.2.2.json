@@ -1,0 +1,60 @@
+{
+  "scope": "Offline compatibility renderer (React 16), synthetic DemoApi and memory localStorage; NOT Spring/PostgreSQL/React 19 production E2E.",
+  "browser": "144.0.7559.96",
+  "checks": [
+    {
+      "check": "1440x900 en: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "1440x900 de: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "1280x560 en: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "1280x560 de: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "1024x768 en: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "1024x768 de: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "390x844 en: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "390x844 de: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "844x390 en: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "844x390 de: exact preference label, reachable sign-out, fresh read-only login",
+      "status": "passed"
+    },
+    {
+      "check": "Administration: create viewer and switch identity through normal controls at 1280x720",
+      "status": "passed"
+    },
+    {
+      "check": "Rules: threshold and number preference survive language switches and re-bootstrap independently",
+      "status": "passed"
+    },
+    {
+      "check": "Delayed synthetic logout: private content clears and login waits for termination",
+      "status": "passed"
+    }
+  ],
+  "passed": 13,
+  "page_errors": []
+}

@@ -32,3 +32,31 @@ describe('Shared design-system controls',()=>{
  it('renders avatars and helpful empty states without external images',()=>{render(<><Avatar name="Nora Becker"/><Empty title="No invoices" body="Import your first invoice."/></>);expect(screen.getByText('NB')).toBeTruthy();expect(screen.getByText('Import your first invoice.')).toBeTruthy();});
  it('limits finance capabilities to finance and administrator roles',()=>{expect(finance({...me,role:'ADMIN'})).toBe(true);expect(finance(me)).toBe(true);expect(finance({...me,role:'APPROVER'})).toBe(false);expect(finance(null)).toBe(false);});
 });
+
+describe('Explicit field-label contract',()=>{
+ it('does not include select options in the associated label',()=>{
+  render(<Field id="format-test" label="Number format"><select><option>English example</option><option>German example</option></select></Field>);
+  const select=screen.getByRole('combobox',{name:'Number format',exact:true});
+  expect(screen.getByLabelText('Number format',{exact:true})).toBe(select);
+  expect(select.labels[0].textContent).toBe('Number format');
+ });
+ it('connects hints as descriptions rather than expanding the label',()=>{
+  render(<Field id="threshold-test" label="Threshold" hint="Separate explanatory text"><input type="number"/></Field>);
+  const control=screen.getByLabelText('Threshold',{exact:true});
+  expect(control.getAttribute('aria-describedby')).toBe('threshold-test-hint');
+  expect(document.getElementById('threshold-test-hint').textContent).toBe('Separate explanatory text');
+ });
+ it('preserves control props and a pre-existing description',()=>{
+  render(<Field id="extra-test" label="Amount" hint="Help"><input name="amount" required aria-describedby="external-help"/></Field>);
+  const input=screen.getByLabelText('Amount');expect(input.name).toBe('amount');expect(input.required).toBe(true);
+  expect(input.getAttribute('aria-describedby')).toBe('external-help extra-test-hint');
+ });
+ it('keeps two explicit fields distinct even when their labels match',()=>{
+  render(<><Field id="first-test" label="Name"><input/></Field><Field id="second-test" label="Name"><input/></Field></>);
+  expect(screen.getAllByLabelText('Name').map(input=>input.id)).toEqual(['first-test','second-test']);
+ });
+ it('does not add a description attribute when there is no hint',()=>{
+  render(<Field id="plain-test" label="Plain"><input/></Field>);
+  expect(screen.getByLabelText('Plain').hasAttribute('aria-describedby')).toBe(false);
+ });
+});

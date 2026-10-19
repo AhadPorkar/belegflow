@@ -29,3 +29,15 @@ describe('Administration, rules, delegations and preferences',()=>{
  it('never offers demo reset outside a standalone preview',()=>{const {store}=show(Settings,{standalone:false});expect(screen.queryByRole('button',{name:store.t('resetDemo')})).toBeNull();});
  it('opens a reset confirmation only for standalone mode',()=>{const {store}=show(Settings,{standalone:true});fireEvent.click(screen.getByRole('button',{name:store.t('resetDemo')}));expect(store.openDialog).toHaveBeenCalledWith('reset');});
 });
+
+describe('Settings labels in both languages',()=>{
+ it.each(['en','de'])('uses exact stable labels without embedding option text (%s)',locale=>{
+  const{store}=show(Settings,{locale,me:{...me,role:'ADMIN'}});
+  for(const key of ['language','numberFormat']){
+   const control=screen.getByRole('combobox',{name:store.t(key),exact:true});
+   expect(screen.getByLabelText(store.t(key),{exact:true})).toBe(control);
+   expect(control.labels[0].textContent).toBe(store.t(key));
+  }
+  expect(screen.getByLabelText(store.t('threshold'),{exact:true}).getAttribute('aria-describedby')).toBe('settings-threshold-hint');
+ });
+});

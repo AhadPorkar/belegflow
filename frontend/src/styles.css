@@ -156,7 +156,15 @@ code,.mono {
   display:flex;
   flex-direction:column;
   padding:29px 18px 18px;
-  z-index:10
+  z-index:10;
+  /* A fixed rail must scroll independently when its content exceeds the viewport. */
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior-y:contain;
+  scrollbar-width:thin
+}
+.sidebar>* {
+  flex-shrink:0
 }
 .brand {
   text-decoration:none;
@@ -3695,4 +3703,16 @@ tr:hover td {
   .decision-actions .secondary-actions .button {
     font-size:11px
   }
+}
+
+/* Essential account controls must remain reachable at every responsive breakpoint. */
+@media (min-width:691px) and (max-height:900px) {
+  .sidebar-note { display:none }
+  .sidebar-bottom { padding-top:12px }
+}
+@media (max-width:1120px) {
+  .mobile-logout { display:inline-flex }
+}
+@media (max-width:690px) {
+  .sidebar { overflow:visible }
 }

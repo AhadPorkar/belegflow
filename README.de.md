@@ -7,13 +7,13 @@ Zweisprachige Rechnungsprüfung mit Leistungsnachweisen für Dienstleistungsunte
 
 ![BelegFlow Arbeitsbereich](docs/screenshots/workspace-de.png)
 
-**Version 0.2.1 ist ein Entwicklungskandidat.** Der Multipart-Testcompiler-Fehler aus CI-Lauf 106020289651 ist im Quellcode korrigiert. Der bereitgestellte Lauf bestätigt 224 bestandene Frontend-Tests, Typprüfung und Produktions-Build (87,38 % Zeilen-Coverage). Lokal erneut ausgeführt: 306 Domänenfälle, 92 Client-Kerntests und 9 Berichtskontrollen. Der korrigierte Spring-/JDK-25-Build, sechs neue Multipart-Regressionen, PostgreSQL und echte Browser-Tests müssen noch ausgeführt werden. Siehe [Prüfbericht](docs/testing/VERIFICATION.md).
+**Version 0.2.2 ist ein Entwicklungskandidat.** Korrigiert zwei Browserfehler aus dem Protokollarchiv 106036450086: eine nicht erreichbare Abmeldung und die Beschriftung der Zahlenformat-Auswahl. Der bereitgestellte 0.2.1-Lauf bestätigt 491 Backend-Fälle, darunter alle 47 PostgreSQL-Integrationstests, sowie 224 Frontend-Fälle; 12 von 14 Browser-Journeys bestanden. Für die neue Revision wurden lokal 306 Domänen-, 100 Client- und 9 Berichtstests sowie 13 gezielte und 17 bestehende Kompatibilitätsprüfungen bestanden. Die aktualisierten 140 React-Komponentenfälle und 25 echten Server-Browser-Journeys müssen in der CI laufen. Siehe [Prüfbericht](docs/testing/VERIFICATION.md).
 
-## Version 0.2.1: Tests und Dokumentation aller Module
+## Version 0.2.2: Tests und Dokumentation aller Module
 
 [Modulvertraege](docs/de/MODULE_REFERENCE.md) | [Testbefehle](docs/de/TESTING.md) | [Fehler und Upgrade](docs/de/TROUBLESHOOTING.md) | [Testmatrix](docs/testing/TEST_MATRIX.md) | [Zweisprachiges HTML-Handbuch](docs/BelegFlow-Handbook.html)
 
-Die Revision korrigiert den Jackson-Startfehler. Deklariert sind 306 Domänen-, 138 Server-Unit-/Konfigurations-, 47 PostgreSQL-, 92 Client-Core-, 132 React-Komponenten- und 14 echte E2E-Faelle. Lokal ausgefuehrt wurden 306 Domaenenfaelle, 92 Core-Faelle und 17 begrenzte Browser-Kompatibilitaetspruefungen. Die anderen Suites benoetigen den mitgelieferten Netzwerklauf; siehe Verifikationsbericht. Keine Datenbankmigration und kein Datenreset sind erforderlich.
+Deklariert sind 306 Domänen-, 138 Server-Unit-/Konfigurations-, 47 PostgreSQL-, 100 Client-Core-, 140 React-Komponenten- und 25 echte E2E-Fälle. Deklarierte Fälle sind keine pauschale Erfolgsmeldung. Datenbankmigrationen und Backend-Fachlogik bleiben unverändert; kein Datenreset ist erforderlich.
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\scripts\verify-all.ps1

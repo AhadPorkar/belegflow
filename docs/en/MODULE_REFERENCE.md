@@ -1,6 +1,6 @@
 # Module reference and extension contracts
 
-Version 0.2.1 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
+Version 0.2.2 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
 
 These boundaries describe the implemented application, not a future ERP. Paths are relative to the repository; server package files live under `server/src/main/java/com/belegflow/server/`, domain classes under `domain/src/main/java/com/belegflow/domain/`. The API reference gives payloads; source gives exact signatures.
 
@@ -204,6 +204,18 @@ React tests render actual React DOM components in jsdom with action spies. State
 
 Write the rule and permission contract; test a negative case first; update DTOs and validated inputs; add any required new migration; preserve versioning, transactions and audit; update EN/DE copy and keyboard behavior; extend unit, SQL and browser contracts as appropriate; update the test matrix, API reference and changelog; run complete verification and inspect its reports.
 
-## Test infrastructure: multipart request builders (0.2.1)
+## Test infrastructure: multipart request builders (0.2.2)
 
 `ModuleIntegrationTest.pdf(String)` returns `MockMultipartHttpServletRequestBuilder`. It intentionally omits dates so missing-date integration cases remain meaningful. Callers chain `.param(...)` and security postprocessors without casts. `MultipartRequestBuilderTest` executes the helper with mocked SQL lookup results but real Spring request builders; its six cases verify request shape, exact uploaded bytes and fluent type safety. They do not claim database coverage. See [troubleshooting](TROUBLESHOOTING.md) and [execution evidence](../testing/VERIFICATION.md).
+
+## 13. Responsive account controls and form-label contract (0.2.2)
+
+**Source:** `frontend/src/components/ui.jsx`, `frontend/src/features/settings/Settings.jsx`, `frontend/src/styles.css`, `frontend/src/store.ts`, `frontend/src/api.ts`.
+
+`Field` accepts an optional page-unique `id`. This explicit branch requires a single input/select/textarea child, renders a separate native label, gives the control the same ID, and appends a hint ID to existing `aria-describedby` values. A hint is descriptive text, not part of the accessible name. Callers without an ID retain implicit-label behavior. Settings use `settings-threshold`, `settings-language`, and `settings-number-format`; do not reuse these IDs on one page.
+
+The fixed sidebar scrolls vertically; its immediate children do not shrink. At up to 1120px, sign-out is available from the topbar; the bottom mobile bar keeps its existing layout. The decorative note is hidden on short desktop screens, not an essential control.
+
+`WorkspaceStore.logout()` invalidates pending private responses, clears private state, and holds the busy/pending guard until completion. Duplicate logout and competing login calls are suppressed. `finally` releases the guard, and HTTP logout clears cached CSRF on success or failure. This does not guarantee termination after a network failure.
+
+**Tests:** core identity/HTTP cases, explicit Field and EN/DE Settings component tests, `responsive-auth.spec.js`, and the administration/preferences cases in `modules.spec.js`. The separate `test-ui-regressions.py` checks only the labelled compatibility showcase.

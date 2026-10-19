@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.2.2 - 2026-10-18 - responsive account controls and exact form labels
+
+* Repair sidebar overflow that put Sign out outside the viewport; expose topbar sign-out on tablets as well as mobile.
+* Use explicit settings label/control IDs and separate hint descriptions; retain exact English/German label assertions.
+* Keep login busy until logout completion, suppress competing authentication calls, and clear CSRF cache in finally.
+* Await real server logout and verify an anonymous session in E2E helpers; restore changed approval thresholds on failure.
+* Add 8 client-core, 8 React-component and 11 real-server browser cases. Current totals: 100 core, 140 components, 25 E2E.
+* Record the supplied 0.2.1 CI results: 491 backend, 224 frontend, 12/14 browser journeys passed. No new production pass is claimed.
+* Locally run 306 domain, 100 core, 9 report-gate, 13 targeted compatibility-browser and 17 existing compatibility-browser cases.
+* Update EN/DE usage, module/testing/troubleshooting guides and the handbook. Backend implementation, database migrations and dependency versions are unchanged.
+
 ## 0.2.1 - 2026-10-18 - multipart test compiler repair
 
 * Fix the return type of `ModuleIntegrationTest.pdf(String)` to `MockMultipartHttpServletRequestBuilder`, resolving the exact compiler diagnostic in uploaded run 106020289651.

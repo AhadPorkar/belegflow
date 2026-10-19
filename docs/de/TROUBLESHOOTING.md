@@ -1,6 +1,19 @@
-# Fehlerdiagnose und Aktualisierung auf 0.2.1
+# Fehlerdiagnose und Aktualisierung auf 0.2.2
 
 [English](../en/TROUBLESHOOTING.md) | [Tests](TESTING.md) | [Betrieb](OPERATIONS.md)
+
+## Lauf 106036450086: Backend erfolgreich, zwei Browserfehler
+
+Dies ist kein erneuter Jackson- oder Multipart-Kompilierungsfehler. Der Lauf bestätigt 491 Backend-Fälle einschließlich 47 PostgreSQL-Tests und 224 Frontend-Fälle. Zwölf von vierzehn Browser-Journeys bestanden. Einzelheiten: [CI-Auswertung](../testing/CI-106036450086.md).
+
+**Administration:** Die feste Seitenleiste konnte Abmelden unterhalb des sichtbaren Bereichs platzieren, ohne selbst scrollbar zu sein. Im Tablet-Bereich fehlte zudem die alternative Abmeldung in der Kopfzeile. Beides ist korrigiert. Gewöhnliche Klicks müssen funktionieren; ein erzwungener Klick oder längeres Warten ersetzt die Korrektur nicht. Der genaue Schritt des Administrationstimeouts fehlt im hochgeladenen Trace-Inhalt; der passende Quellcodefehler wurde lokal reproduziert.
+
+**Einstellungen:** Die bisherige Label-Umklammerung enthielt auch die Optionstexte. Die exakte Suche nach dem Zahlenformat fand deshalb kein Steuerelement. Die Einstellungen verwenden nun getrennte Labels mit `htmlFor`/`id`; Hinweise sind über `aria-describedby` verbunden. Exakte EN-/DE-Prüfungen bleiben erhalten.
+
+**Sitzungswechsel:** Vertrauliche Daten verschwinden sofort; die erneute Anmeldung wartet aber auf die Serverantwort zur Abmeldung. Netzwerkfehler werden sichtbar gemeldet und bestätigen nicht automatisch die serverseitige Abmeldung. Der Browserhelfer prüft die Antwort und den anonymen Sitzungsstatus, statt die Seite vorzeitig neu zu laden.
+
+Die korrigierten Dateien in einem neuen Commit prüfen. Datenbank, eigene Konfiguration und geprüfte Lockdatei beibehalten. Keine Migration und keine Datenlöschung erforderlich. Erwartete SQL-Ablehnungen in bestandenen Negativtests sind kein Datenbankdefekt.
+
 
 ## Neuer Lauf 106020289651: Multipart-Test kompiliert nicht
 
@@ -27,13 +40,13 @@ MockMultipartHttpServletRequestBuilder pdf(String number) {
 
 Multipart- und normale Request-Builder sind in der aktuellen Spring-API unterschiedliche konkrete Typen. Gleiche Fluent-Methoden bedeuten keine solche Vererbungsbeziehung. Kein Cast, kein Spring-Downgrade und kein Abschalten der Testkompilierung ist erforderlich.
 
-Version 0.2.1 ergänzt sechs datenbankfreie Fälle in `MultipartRequestBuilderTest` und trennt die CI-Vorprüfung in Testkompilierung und anschließende Jackson-/Multipart-Regressionen. PostgreSQL- und echte Browser-Tests bleiben erhalten.
+Version 0.2.2 ergänzt sechs datenbankfreie Fälle in `MultipartRequestBuilderTest` und trennt die CI-Vorprüfung in Testkompilierung und anschließende Jackson-/Multipart-Regressionen. PostgreSQL- und echte Browser-Tests bleiben erhalten.
 
 Im selben hochgeladenen Lauf haben **224 Frontend-Tests bestanden**, außerdem Typprüfung, Produktions-Build und npm-Audit. Gemessen wurden **87,38 % Zeilen- und 84,82 % Zweigabdeckung**. Für den vollständigen Stack liegt wegen der fehlgeschlagenen Backend-Voraussetzung kein erfolgreicher Lauf vor. Siehe [Protokollnachweis](../testing/CI-106020289651.md).
 
 ### Sicher aktualisieren
 
-Den Inhalt des ZIP-Ordners `belegflow/` in das bestehende Repository übernehmen; keinen zweiten verschachtelten Ordner erstellen. `.env`, Geheimnisse, Datenbank-Volumes, eigene Änderungen und eine bereits geprüfte `frontend/package-lock.json` erhalten. Die Paketversion ist jetzt 0.2.1; eine vorhandene Lockdatei nur hinsichtlich dieser Paketmetadaten angleichen. Abhängigkeitsversionen wurden nicht geändert.
+Den Inhalt des ZIP-Ordners `belegflow/` in das bestehende Repository übernehmen; keinen zweiten verschachtelten Ordner erstellen. `.env`, Geheimnisse, Datenbank-Volumes, eigene Änderungen und eine bereits geprüfte `frontend/package-lock.json` erhalten. Die Paketversion ist jetzt 0.2.2; eine vorhandene Lockdatei nur hinsichtlich dieser Paketmetadaten angleichen. Abhängigkeitsversionen wurden nicht geändert.
 
 Ein erneuter Lauf des **alten GitHub-Laufs** verwendet weiterhin den alten Commit. Die korrigierten Dateien committen und pushen oder den korrigierten Branch manuell auswählen.
 
@@ -75,7 +88,7 @@ Jackson 3 hat diese Option aus `SerializationFeature` verschoben. Ein anderer Bo
 
 ## Quellcode aktualisieren, Daten erhalten
 
-Wichtige Daten zuerst sichern. Das neue Archiv in ein sauberes Verzeichnis entpacken. Eigene Anpassungen vergleichen und bewusst übernehmen; Geheimnisse aus einer sicheren Quelle kopieren, nicht aus Git. Kein zweites `belegflow/` innerhalb des vorhandenen Repositorys erzeugen. Quellcode, Tests, Workflow und Dokumentation gemeinsam committen. Version 0.2.1 enthält keine geänderte oder neue Datenbankmigration.
+Wichtige Daten zuerst sichern. Das neue Archiv in ein sauberes Verzeichnis entpacken. Eigene Anpassungen vergleichen und bewusst übernehmen; Geheimnisse aus einer sicheren Quelle kopieren, nicht aus Git. Kein zweites `belegflow/` innerhalb des vorhandenen Repositorys erzeugen. Quellcode, Tests, Workflow und Dokumentation gemeinsam committen. Version 0.2.2 enthält keine geänderte oder neue Datenbankmigration.
 
 Zuerst den isolierten Qualitätslauf ausführen, dann die Anwendung mit `docker compose up --build -d` neu bauen. `docker compose logs app` prüfen. Wertvolle Datenvolumes nicht mit `docker compose down -v` löschen, um einen Jackson-Konfigurationsfehler zu beheben. Der Qualitätsstack besitzt einen eigenen Namen und eine separate, wegwerfbare Testdatenbank.
 

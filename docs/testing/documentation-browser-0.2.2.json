@@ -1,0 +1,35 @@
+{
+  "release": "0.2.2",
+  "scope": "Local Chromium documentation, not production application tests",
+  "passed": 7,
+  "checks": [
+    {
+      "name": "English is default; twelve guides and one active article",
+      "status": "passed"
+    },
+    {
+      "name": "Current release and correctly scoped CI/local evidence",
+      "status": "passed"
+    },
+    {
+      "name": "Module navigation and German switch retain the selected guide",
+      "status": "passed"
+    },
+    {
+      "name": "Updated German search index opens a matching article",
+      "status": "passed"
+    },
+    {
+      "name": "Handbook fits a 390px viewport in both languages",
+      "status": "passed"
+    },
+    {
+      "name": "START-HERE language buttons switch actual content",
+      "status": "passed"
+    },
+    {
+      "name": "No uncaught browser errors in documentation interactions",
+      "status": "passed"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 # Release gates and commercial boundary
 
-Version 0.2.1 is a source/engineering candidate. The following gates are intentionally open; no green badges are fabricated.
+Version 0.2.2 is a source/engineering candidate. The following gates are intentionally open; no green badges are fabricated.
 
 | Gate | Required evidence before real customer use |
 |---|---|

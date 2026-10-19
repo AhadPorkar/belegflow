@@ -1,6 +1,6 @@
 # Modulreferenz und Erweiterungsvertrag
 
-Version 0.2.1 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
+Version 0.2.2 | [English](../en/MODULE_REFERENCE.md) | [Deutsch](../de/MODULE_REFERENCE.md)
 
 Die folgenden Grenzen beschreiben die implementierte Anwendung, kein zukünftiges ERP. Pfade sind relativ zum Repository. Bei Java-Paketpfaden gilt `server/src/main/java/com/belegflow/server/`; Domänenklassen liegen unter `domain/src/main/java/com/belegflow/domain/`. Die API-Referenz enthält Payloads, der Quellcode die exakten Signaturen.
 
@@ -204,6 +204,18 @@ React-Tests verwenden echte React-DOM-Komponenten mit jsdom und Aktions-Spies. Z
 
 Fachregel und Rechte schriftlich festlegen; Negativfall zuerst testen; DTO und validierte Eingaben ändern; erforderliche neue Migration anlegen; Versionierung/Transaktion/Audit erhalten; EN/DE und Tastaturbedienung aktualisieren; Unit-, SQL- und Browservertrag passend erweitern; Testmatrix, API-Referenz und Changelog aktualisieren; vollständigen Qualitätslauf und Berichte prüfen.
 
-## Testinfrastruktur: Multipart-Request-Builder (0.2.1)
+## Testinfrastruktur: Multipart-Request-Builder (0.2.2)
 
 `ModuleIntegrationTest.pdf(String)` liefert `MockMultipartHttpServletRequestBuilder`. Datumsfelder fehlen absichtlich, damit die Integrationsfälle für fehlende Datumsangaben aussagekräftig bleiben. `.param(...)` und Security-Postprozessoren bleiben ohne Cast verkettbar. `MultipartRequestBuilderTest` verwendet echte Spring-Builder und simuliert nur SQL-Nachschlagewerte. Sechs Fälle prüfen Request-Struktur, exakte Dateibytes und Typsicherheit; sie ersetzen keine Datenbanktests. Siehe [Fehlerdiagnose](TROUBLESHOOTING.md) und [Prüfnachweis](../testing/VERIFICATION.md).
+
+## 13. Responsive Abmeldung und Formularbeschriftung (0.2.2)
+
+**Quellcode:** `frontend/src/components/ui.jsx`, `frontend/src/features/settings/Settings.jsx`, `frontend/src/styles.css`, `frontend/src/store.ts`, `frontend/src/api.ts`.
+
+`Field` akzeptiert optional eine seitenweit eindeutige `id`. Dieser Zweig erwartet genau ein Eingabe-/Select-/Textarea-Element, erzeugt ein separates natives Label und verbindet Hinweise mit `aria-describedby`. Hinweise gehören nicht zum zugänglichen Namen. Bestehende Aufrufer ohne ID bleiben kompatibel. Die Einstellungen verwenden `settings-threshold`, `settings-language` und `settings-number-format`.
+
+Die feste Seitenleiste scrollt vertikal; direkte Kinder werden nicht zusammengeschoben. Bis 1120px steht die Abmeldung in der Kopfzeile zur Verfügung. Bei niedrigen Desktopfenstern entfällt nur der dekorative Hinweis.
+
+`WorkspaceStore.logout()` verwirft verspätete private Antworten, entfernt vertrauliche Daten und blockiert eine konkurrierende Anmeldung bis zum Abschluss. Doppelte Abmeldung wird unterdrückt. `finally` löst die Sperre; der HTTP-Client verwirft den CSRF-Cache auch im Fehlerfall. Ein Netzwerkfehler ist keine Garantie für eine beendete Serversitzung.
+
+**Tests:** Identitäts-/HTTP-Kerntests, explizite Field-/EN-DE-Settings-Komponentenfälle, `responsive-auth.spec.js` und Administration/Einstellungen in `modules.spec.js`. `test-ui-regressions.py` ist ausschließlich für die gekennzeichnete Kompatibilitätsvorschau bestimmt.

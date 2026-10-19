@@ -1,0 +1,18 @@
+PASS English is the initial interface language
+PASS Finance demo login loads the three-pane invoice workspace
+PASS Submission is visibly blocked until service evidence is accepted
+PASS Project approver accepts service evidence through the actual dialog
+PASS Finance submits after the evidence gate is satisfied
+PASS Independent approver moves invoice to approved
+PASS Downloaded showcase accounting ZIP is readable and preserves the original SHA-256
+PASS Administrator completes a high-value second approval
+PASS Supplier, project, export, audit and settings screens render without runtime errors
+PASS Clarification resolution clears the question and returns the invoice to review
+PASS UBL fixture imports through the real upload form in the compatibility showcase
+PASS Exact re-import reuses the same showcase invoice
+PASS German workspace renders without horizontal overflow at 1440 px
+PASS Dark theme renders with the same workspace structure
+PASS 390 px mobile inbox fits the viewport without horizontal overflow
+PASS Mobile decision pane keeps the primary approval action visible
+PASS No uncaught browser runtime errors during the compatibility journeys
+TOTAL 17

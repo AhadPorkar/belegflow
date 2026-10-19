@@ -1,6 +1,6 @@
 # Testing, coverage and release verification
 
-Version 0.2.1 | [Deutsch](../de/TESTING.md) | [Module reference](MODULE_REFERENCE.md) | [Actual execution evidence](../testing/VERIFICATION.md)
+Version 0.2.2 | [Deutsch](../de/TESTING.md) | [Module reference](MODULE_REFERENCE.md) | [Actual execution evidence](../testing/VERIFICATION.md)
 
 ## What "all modules" means
 
@@ -27,7 +27,7 @@ docker compose -f compose.quality.yml down
 
 The `belegflow-quality` project uses database `belegflow_test` on an ephemeral PostgreSQL filesystem. It does not use the application's `pgdata` volume and does not expose a database port. Its password is a public local-test value, not a production secret. The helper explicitly requires `BF_TEST_DATABASE_ACK=DISPOSABLE` and rejects other database names. The nontransactional concurrency cases leave synthetic rows until this test instance is removed.
 
-The run installs dependencies, type-checks, runs core/React tests with V8 coverage, builds the production React client, runs all Maven/JUnit/PostgreSQL cases with JaCoCo, checks that the three database suites actually ran, starts the built Spring application, and runs the 14 real-application browser journeys. An error stops the run. Reports are collected even on failure; a failed build is never replaced with the offline preview.
+The run installs dependencies, type-checks, runs core/React tests with V8 coverage, builds the production React client, runs all Maven/JUnit/PostgreSQL cases with JaCoCo, checks that the three database suites actually ran, starts the built Spring application, and runs the 25 real-application browser journeys. An error stops the run. Reports are collected even on failure; a failed build is never replaced with the offline preview.
 
 ## Commands by layer
 
@@ -36,10 +36,10 @@ The run installs dependencies, type-checks, runs core/React tests with V8 covera
 | Domain policies without downloads | `sh scripts/test-domain-offline.sh` | 306 deterministic cases, JDK 21+ compatible helper. |
 | Configuration regression | `./mvnw -Dtest=JacksonConfigurationTest -Dsurefire.failIfNoSpecifiedTests=false test` | Actual YAML binding, ISO dates/instants and the old failure. |
 | Backend unit/configuration | `./mvnw test` | Domain and server unit cases; database cases require the explicit integration flag. |
-| Frontend core | `cd frontend && npm run test:core` | 92 HTTP/store/format/i18n cases. |
-| React components | `cd frontend && npm run test:components` | 132 expanded cases using the actual React dependency and jsdom. |
+| Frontend core | `cd frontend && npm run test:core` | 100 HTTP/store/format/i18n cases. |
+| React components | `cd frontend && npm run test:components` | 140 expanded cases using the actual React dependency and jsdom. |
 | Frontend coverage | `cd frontend && npm run test:coverage` | Both Node and DOM Vitest projects; includes unimported production source. |
-| Browser journeys | `cd frontend && npm run test:e2e` | 14 specifications against the running real application, not DemoApi. |
+| Browser journeys | `cd frontend && npm run test:e2e` | 25 specifications against the running real application, not DemoApi. |
 | Complete verification | `sh scripts/verify-all.sh` | All layers; requires configured tools and disposable PostgreSQL. |
 
 Do not run multiple full-stack jobs against the same test database. Test order must not be used as a business prerequisite. Database transactional cases roll back; concurrency cases use independent organization IDs. E2E forms create uniquely named synthetic records. Scheduled reminders are delayed during testing so explicit reminder cases control their timing.
@@ -85,5 +85,13 @@ Full automated success is necessary, not sufficient: keyboard/screen-reader revi
 ./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
 ```
 
-`MultipartRequestBuilderTest` uses the actual test helper with mocked SQL lookup values. It does not connect to PostgreSQL and does not replace the import integration tests. Its execution in the pinned environment remains required; see [the verification boundary](../testing/VERIFICATION.md).
+`MultipartRequestBuilderTest` uses the actual test helper with mocked SQL lookup values. It does not connect to PostgreSQL and does not replace the import integration tests. Its six cases passed in the supplied 0.2.1 CI run; the full 0.2.2 release still needs its own gate. See [the verification boundary](../testing/VERIFICATION.md).
 
+
+## 0.2.2 browser regressions
+
+Current declared totals are 100 client-core, 140 React component and 25 real-server E2E cases. New real-server cases cover five viewport shapes in EN/DE and a deliberately delayed logout request that still reaches the actual backend. The administration helper awaits the successful logout response and verifies a 401 session before the next login. Threshold cleanup is in `finally`. Exact labels are not replaced with loose text matching.
+
+The uploaded 0.2.1 run now proves backend test compilation, all 491 backend cases, and 224 frontend cases passed; only two browser cases failed. The new package has local scoped results, not a completed production rerun. See the dated [verification report](../testing/VERIFICATION.md). For the optional standalone-only regression script use `python scripts/test-ui-regressions.py` with Python Playwright and Chromium. Its 13 cases and the 17 existing showcase checks must never be presented as real-server E2E results.
+
+Documentation-only browser QA: `python scripts/test-handbook.py` checks seven EN/DE navigation, search, evidence and mobile-layout scenarios. It requires Python Playwright and Chromium and does not count toward application E2E coverage.

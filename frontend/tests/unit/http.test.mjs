@@ -16,3 +16,14 @@ for(const [status,code] of [[401,'AUTH_REQUIRED'],[403,'FORBIDDEN'],[404,'NOT_FO
 test('HTTP download: JSON business error is preserved',async t=>{mocked(t,async()=>json({code:'SESSION_REVOKED'},401));await assert.rejects(()=>new HttpApi().download('/x'),e=>e.status===401);});
 test('HTTP download: network failures are normalized',async t=>{mocked(t,async()=>{throw Error('offline');});await assert.rejects(()=>new HttpApi().download('/x'),e=>e.code==='NETWORK_ERROR');});
 test('HTTP: failed CSRF fetch prevents unsafe request',async t=>{let count=0;mocked(t,async()=>{count++;throw Error('offline');});await assert.rejects(()=>new HttpApi().send('POST','/command',{}),e=>e.code==='NETWORK_ERROR');assert.equal(count,1);});
+
+for(const status of [204,500])test('HTTP: logout clears cached CSRF even with response '+status,async t=>{
+ let tokens=0;mocked(t,async p=>{
+  if(p==='/api/csrf')return json({token:'token-'+(++tokens)});
+  if(p==='/api/logout')return status===204?new Response(null,{status}):json({code:'UNEXPECTED_ERROR'},status);
+  return json({ok:true});
+ });
+ const api=new HttpApi();await api.send('POST','/before',{});
+ if(status===204)await api.logout();else await assert.rejects(()=>api.logout(),e=>e.code==='UNEXPECTED_ERROR');
+ await api.send('POST','/after',{});assert.equal(tokens,2);
+});

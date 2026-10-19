@@ -156,7 +156,15 @@ code,.mono {
   display:flex;
   flex-direction:column;
   padding:29px 18px 18px;
-  z-index:10
+  z-index:10;
+  /* A fixed rail must scroll independently when its content exceeds the viewport. */
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior-y:contain;
+  scrollbar-width:thin
+}
+.sidebar>* {
+  flex-shrink:0
 }
 .brand {
   text-decoration:none;
@@ -3696,6 +3704,18 @@ tr:hover td {
     font-size:11px
   }
 }
+
+/* Essential account controls must remain reachable at every responsive breakpoint. */
+@media (min-width:691px) and (max-height:900px) {
+  .sidebar-note { display:none }
+  .sidebar-bottom { padding-top:12px }
+}
+@media (max-width:1120px) {
+  .mobile-logout { display:inline-flex }
+}
+@media (max-width:690px) {
+  .sidebar { overflow:visible }
+}
 </style></head><body><div id="root"></div><!-- Preview only: React/ReactDOM 16.0.0 local renderer. Production source targets React 19.3.0. See THIRD-PARTY-NOTICE.md. No real data. --><script>/*
  React v16.0.0
  react.production.min.js
@@ -4052,7 +4072,14 @@ class HttpApi {
         await this.csrf();
         return this.get('/session');
     }
-    async logout() { await this.send('POST', '/logout'); this.token = null; }
+    async logout() {
+        try {
+            await this.send('POST', '/logout');
+        }
+        finally {
+            this.token = null;
+        }
+    }
     async download(path, filename) {
         let r;
         try {
@@ -4458,7 +4485,17 @@ function Empty({ icon = 'inbox', title, body, children }) {
         body && react_1.default.createElement("p", null, body),
         children);
 }
-function Field({ label, children, hint, className = '' }) {
+/** A single labelled control. Pass a page-unique id for an explicit label and hint relationship. */
+function Field({ label, children, hint, className = '', id }) {
+    if (id) {
+        const control = react_1.default.Children.only(children);
+        const hintId = hint ? id + '-hint' : undefined;
+        const describedBy = [control.props['aria-describedby'], hintId].filter(Boolean).join(' ') || undefined;
+        return react_1.default.createElement("div", { className: 'field ' + className },
+            react_1.default.createElement("label", { className: "field-label", htmlFor: id }, label),
+            react_1.default.cloneElement(control, { id, 'aria-describedby': describedBy }),
+            hint && react_1.default.createElement("span", { className: "field-hint", id: hintId }, hint));
+    }
     return react_1.default.createElement("label", { className: 'field ' + className },
         react_1.default.createElement("span", { className: "field-label" }, label),
         children,
@@ -4658,7 +4695,7 @@ function Login({ state: s, store }) {
                     react_1.default.createElement(ui_jsx_1.Icon, { name: "inbox", size: 26 })),
                 react_1.default.createElement("h2", null, t('welcome')),
                 react_1.default.createElement("p", null, t('signIn')),
-                react_1.default.createElement("form", { onSubmit: e => {
+                react_1.default.createElement("form", { "aria-busy": s.busy, onSubmit: e => {
                         e.preventDefault();
                         const fd = new FormData(e.currentTarget);
                         store.login(String(fd.get('email')), String(fd.get('password')));
@@ -5045,19 +5082,19 @@ function Settings({ state: s, store }) {
                         e.preventDefault();
                         store.saveRules(String(new FormData(e.currentTarget).get('threshold')));
                     } },
-                    react_1.default.createElement(ui_jsx_1.Field, { label: t('threshold'), hint: t('thresholdHelp') },
+                    react_1.default.createElement(ui_jsx_1.Field, { id: "settings-threshold", label: t('threshold'), hint: t('thresholdHelp') },
                         react_1.default.createElement("input", { key: s.catalog.threshold, name: "threshold", type: "number", step: "0.01", min: "0.01", max: "999999999999.99", required: true, defaultValue: s.catalog.threshold, disabled: !admin })),
                     admin && react_1.default.createElement("button", { className: "button primary", type: "submit", disabled: s.busy }, t('save')))),
             react_1.default.createElement("section", { className: "settings-card" },
                 react_1.default.createElement("div", { className: "settings-card-heading" },
                     react_1.default.createElement(ui_jsx_1.Icon, { name: "settings" }),
                     react_1.default.createElement("h2", null, t('preferences'))),
-                react_1.default.createElement(ui_jsx_1.Field, { label: t('language') },
-                    react_1.default.createElement("select", { value: s.locale, onChange: e => store.setLocale(e.target.value) },
+                react_1.default.createElement(ui_jsx_1.Field, { id: "settings-language", label: t('language') },
+                    react_1.default.createElement("select", { name: "interface_language", value: s.locale, onChange: e => store.setLocale(e.target.value) },
                         react_1.default.createElement("option", { value: "en" }, "English"),
                         react_1.default.createElement("option", { value: "de" }, "Deutsch"))),
-                react_1.default.createElement(ui_jsx_1.Field, { label: t('numberFormat') },
-                    react_1.default.createElement("select", { value: s.numberLocale, onChange: e => store.setNumberLocale(e.target.value) },
+                react_1.default.createElement(ui_jsx_1.Field, { id: "settings-number-format", label: t('numberFormat') },
+                    react_1.default.createElement("select", { name: "number_locale", value: s.numberLocale, onChange: e => store.setNumberLocale(e.target.value) },
                         react_1.default.createElement("option", { value: "en-GB" }, "1,234.56 \u00B7 18 Oct 2026"),
                         react_1.default.createElement("option", { value: "de-DE" }, "1.234,56 \u00B7 18.10.2026"))),
                 react_1.default.createElement(ui_jsx_1.Button, { icon: s.theme === 'light' ? 'moon' : 'sun', onClick: () => store.toggleTheme() }, t(s.theme === 'light' ? 'dark' : 'light')))),
@@ -5877,6 +5914,7 @@ class WorkspaceStore {
     searchTimer;
     toastTimer;
     auditLoading = false;
+    logoutPending = false;
     constructor(api) { this.api = api; }
     getSnapshot = () => this.state;
     subscribe = (listener) => { this.listeners.add(listener); return () => this.listeners.delete(listener); };
@@ -5945,7 +5983,7 @@ class WorkspaceStore {
         }
     }
     async login(email, password) {
-        if (this.state.busy)
+        if (this.state.busy || this.logoutPending)
             return;
         const ticket = ++this.authTicket;
         this.listTicket++;
@@ -5972,6 +6010,9 @@ class WorkspaceStore {
             await this.login(email, 'BelegFlow-Demo-2026!');
     }
     async logout() {
+        if (this.logoutPending)
+            return;
+        this.logoutPending = true;
         const ticket = ++this.authTicket;
         this.listTicket++;
         this.selectionTicket++;
@@ -5979,13 +6020,19 @@ class WorkspaceStore {
             clearTimeout(this.searchTimer);
         if (this.toastTimer)
             clearTimeout(this.toastTimer);
-        this.patch({ ...this.privateState(), busy: false, ready: true, error: null });
+        // Clear private data immediately, but do not permit a new login until the server replies.
+        this.patch({ ...this.privateState(), busy: true, ready: true, error: null });
         try {
             await this.api.logout();
         }
         catch (e) {
             if (ticket === this.authTicket)
                 this.fail(e);
+        }
+        finally {
+            this.logoutPending = false;
+            if (ticket === this.authTicket)
+                this.patch({ busy: false });
         }
     }
     async loadAll() {

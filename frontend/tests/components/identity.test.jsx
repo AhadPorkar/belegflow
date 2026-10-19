@@ -21,3 +21,9 @@ describe('Identity screen',()=>{
  it('exposes explicit language and theme controls',()=>{const {store}=show(Login,{me:null});fireEvent.click(screen.getByRole('button',{name:'DE'}));fireEvent.click(screen.getByRole('button',{name:store.t('theme')}));expect(store.setLocale).toHaveBeenCalledWith('de');expect(store.toggleTheme).toHaveBeenCalledOnce();});
  it('uses password and autocomplete attributes',()=>{const {container}=show(Login,{me:null});expect(input(container,'password').type).toBe('password');expect(input(container,'password').autocomplete).toBe('current-password');expect(input(container,'email').required).toBe(true);});
 });
+
+it('announces an unfinished authentication transition on the login form',()=>{
+ const{container}=show(Login,{busy:true,me:null});
+ expect(container.querySelector('form').getAttribute('aria-busy')).toBe('true');
+ expect(container.querySelector('button[type=submit]').disabled).toBe(true);
+});

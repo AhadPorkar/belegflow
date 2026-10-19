@@ -1,17 +1,19 @@
 {
-  "release": "0.2.1",
+  "release": "0.2.2",
   "declared": {
     "domain": 306,
     "server_unit_configuration": 138,
     "postgres_integration": 47,
-    "frontend_core": 92,
-    "react_component": 132,
-    "production_e2e": 14
+    "frontend_core": 100,
+    "react_component": 140,
+    "production_e2e": 25
   },
   "locally_executed": {
     "domain": 306,
-    "frontend_core": 92,
+    "frontend_core": 100,
     "report_gate_unit": 9,
+    "targeted_compatibility_browser": 13,
+    "existing_compatibility_browser": 17,
     "documentation_browser": 7
   },
   "backend_files": [
@@ -143,7 +145,7 @@
     },
     {
       "file": "frontend/tests/components/catalog-settings.test.jsx",
-      "cases": 21,
+      "cases": 23,
       "names": [
         {
           "name": "'lists and edits a supplier (%s)'",
@@ -216,6 +218,10 @@
         {
           "name": "'opens a reset confirmation only for standalone mode'",
           "cases": 1
+        },
+        {
+          "name": "exact stable settings labels in English and German",
+          "cases": 2
         }
       ]
     },
@@ -315,7 +321,7 @@
     },
     {
       "file": "frontend/tests/components/identity.test.jsx",
-      "cases": 9,
+      "cases": 10,
       "names": [
         {
           "name": "'renders localized labels and submitted credentials (%s)'",
@@ -348,12 +354,16 @@
         {
           "name": "'uses password and autocomplete attributes'",
           "cases": 1
+        },
+        {
+          "name": "announce pending authentication with aria-busy",
+          "cases": 1
         }
       ]
     },
     {
       "file": "frontend/tests/components/shell-app.test.jsx",
-      "cases": 26,
+      "cases": 31,
       "names": [
         {
           "name": "'renders boot state before authentication finishes'",
@@ -433,6 +443,26 @@
         },
         {
           "name": "'limits finance capabilities to finance and administrator roles'",
+          "cases": 1
+        },
+        {
+          "name": "explicit Field labels exclude options",
+          "cases": 1
+        },
+        {
+          "name": "hint linked as description",
+          "cases": 1
+        },
+        {
+          "name": "preserve existing control description",
+          "cases": 1
+        },
+        {
+          "name": "distinct IDs with identical labels",
+          "cases": 1
+        },
+        {
+          "name": "omit unused description",
           "cases": 1
         }
       ]
@@ -618,9 +648,23 @@
           "cases": 1
         }
       ]
+    },
+    {
+      "file": "frontend/tests/e2e/responsive-auth.spec.js",
+      "cases": 11,
+      "names": [
+        {
+          "name": "five viewport shapes in English and German",
+          "cases": 10
+        },
+        {
+          "name": "delayed real-server logout",
+          "cases": 1
+        }
+      ]
     }
   ],
-  "warning": "Declared tests are not a claim that their supported dependencies or database were available locally. See VERIFICATION.md.",
+  "warning": "Declared cases are not execution results. See VERIFICATION.md. The changed 0.2.2 React component and real-server E2E suites still require the pinned full-stack run.",
   "historical_local_0_2_0": {
     "compatibility_browser": 17
   },
@@ -636,5 +680,23 @@
     "statements": 86.49,
     "functions": 88.44,
     "backend_test_compilation": "failed; addressed in 0.2.1, not re-executed here"
+  },
+  "observed_user_ci_0_2_1": {
+    "source_archive": "logs_106036450086.zip",
+    "domain": 306,
+    "server_unit_configuration": 138,
+    "postgres_integration": 47,
+    "backend_total": 491,
+    "maven_build": "passed",
+    "frontend_tests": 224,
+    "lines": 87.38,
+    "branches": 84.82,
+    "functions": 88.44,
+    "statements": 86.49,
+    "production_e2e": {
+      "passed": 12,
+      "failed": 2,
+      "total": 14
+    }
   }
 }

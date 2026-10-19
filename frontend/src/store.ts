@@ -27,6 +27,7 @@ export class WorkspaceStore {
     private searchTimer: ReturnType<typeof setTimeout> | undefined;
     private toastTimer: ReturnType<typeof setTimeout> | undefined;
     private auditLoading = false;
+    private logoutPending = false;
     constructor(api: Api) { this.api = api; }
     getSnapshot = (): State => this.state;
     subscribe = (listener: () => void): (() => void) => { this.listeners.add(listener); return () => this.listeners.delete(listener); };
@@ -86,7 +87,7 @@ export class WorkspaceStore {
         }
     }
     async login(email: string, password: string): Promise<void> {
-        if (this.state.busy)
+        if (this.state.busy || this.logoutPending)
             return;
         const ticket = ++this.authTicket;
         this.listTicket++;
@@ -108,13 +109,20 @@ export class WorkspaceStore {
     async loginDemo(email: string): Promise<void> { if (this.state.demo)
         await this.login(email, 'BelegFlow-Demo-2026!'); }
     async logout(): Promise<void> {
+        if (this.logoutPending) return;
+        this.logoutPending = true;
         const ticket = ++this.authTicket;
         this.listTicket++; this.selectionTicket++;
         if (this.searchTimer) clearTimeout(this.searchTimer);
         if (this.toastTimer) clearTimeout(this.toastTimer);
-        this.patch({ ...this.privateState(), busy: false, ready: true, error: null });
+        // Clear private data immediately, but do not permit a new login until the server replies.
+        this.patch({ ...this.privateState(), busy: true, ready: true, error: null });
         try { await this.api.logout(); }
         catch (e) { if (ticket === this.authTicket) this.fail(e); }
+        finally {
+            this.logoutPending = false;
+            if (ticket === this.authTicket) this.patch({ busy: false });
+        }
     }
     async loadAll(): Promise<void> {
         if (!this.state.me)

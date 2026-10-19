@@ -22,7 +22,7 @@ export function Settings({ state: s, store }) {
         e.preventDefault();
         store.saveRules(String(new FormData(e.currentTarget).get('threshold')));
     }}>
-<Field label={t('threshold')} hint={t('thresholdHelp')}>
+<Field id="settings-threshold" label={t('threshold')} hint={t('thresholdHelp')}>
 <input key={s.catalog.threshold} name="threshold" type="number" step="0.01" min="0.01" max="999999999999.99" required defaultValue={s.catalog.threshold} disabled={!admin}/>
 </Field>{admin && <button className="button primary" type="submit" disabled={s.busy}>{t('save')}</button>}</form>
 </section>
@@ -31,14 +31,14 @@ export function Settings({ state: s, store }) {
 <Icon name="settings"/>
 <h2>{t('preferences')}</h2>
 </div>
-<Field label={t('language')}>
-<select value={s.locale} onChange={e => store.setLocale(e.target.value)}>
+<Field id="settings-language" label={t('language')}>
+<select name="interface_language" value={s.locale} onChange={e => store.setLocale(e.target.value)}>
 <option value="en">English</option>
 <option value="de">Deutsch</option>
 </select>
 </Field>
-<Field label={t('numberFormat')}>
-<select value={s.numberLocale} onChange={e => store.setNumberLocale(e.target.value)}>
+<Field id="settings-number-format" label={t('numberFormat')}>
+<select name="number_locale" value={s.numberLocale} onChange={e => store.setNumberLocale(e.target.value)}>
 <option value="en-GB">1,234.56 &middot; 18 Oct 2026</option>
 <option value="de-DE">1.234,56 &middot; 18.10.2026</option>
 </select>

@@ -1,77 +1,84 @@
-# BelegFlow 0.2.1 verification report
+# BelegFlow 0.2.2 verification report
 
-Release date: October 18, 2026. Status: **targeted compiler-fix engineering candidate**.
+Release date: October 18, 2026. Status: **targeted browser-fix engineering candidate**.
 
-[Observed CI evidence](CI-106020289651.md) | [Module matrix](TEST_MATRIX.md) | [English troubleshooting](../en/TROUBLESHOOTING.md) | [Deutsche Fehlerdiagnose](../de/TROUBLESHOOTING.md)
+[Observed CI evidence](CI-106036450086.md) | [Module matrix](TEST_MATRIX.md) | [English troubleshooting](../en/TROUBLESHOOTING.md) | [Deutsche Fehlerdiagnose](../de/TROUBLESHOOTING.md)
 
-## What was fixed
+## Fixes
 
-`ModuleIntegrationTest.pdf(String)` declared `MockHttpServletRequestBuilder` while returning the separate, self-typed `MockMultipartHttpServletRequestBuilder`. The return declaration now matches the multipart value. No unsafe cast, library downgrade, disabled test, or application behavior change is used to hide the failure.
+The fixed sidebar is vertically scrollable and does not compress its children into unreachable content. Short desktop screens omit the decorative note. Tablet widths now expose the topbar sign-out control, covering the former gap between desktop and mobile breakpoints.
 
-Six new database-free `MultipartRequestBuilderTest` cases use the actual integration helper and Spring request builders. SQL lookup results alone are mocked. They check the return contract, original PDF bytes, metadata/decimal fields, deliberately absent dates, date-parameter chaining, and request-postprocessor chaining.
+Settings use explicit label/control IDs. Option text is outside the label and helper text is connected by `aria-describedby`. Existing implicit-label callers remain supported. Exact EN/DE labels are tested rather than replaced by a loose CSS selector.
 
-The CI preflight now exposes `test-compile` as its own step, then runs both Jackson and multipart regression suites. The PostgreSQL/real-browser gate remains in place. Dependencies have not been upgraded or downgraded in this repair.
+Logout clears private data immediately, keeps login disabled until termination finishes, suppresses duplicate termination and competing login calls, and clears cached CSRF state even on a failed logout response. A failure is shown and releases the controls; a failed network response is not claimed to prove server-side termination.
 
-## Three distinct kinds of evidence
+E2E sign-out waits for a real successful `/api/logout` response and verifies `/api/session` returns 401. The next login is submitted on the existing login screen, not through an eager reload. Rule tests restore the original threshold in `finally`. Eleven added real-server journeys exercise five viewport shapes in EN/DE and a delayed logout.
 
-### 1. Observed in the user's supplied 0.2.0 CI logs
+No test was skipped or weakened to conceal a failure. No forced click, arbitrary sleep, dependency downgrade, migration change, or overall test-timeout increase was introduced. Per-action and navigation bounds of 10/15 seconds improve failure diagnostics; retries remain zero.
 
-* Frontend: **224 real Vitest tests passed** across 9 files (92 core + 132 component).
-* TypeScript check and Vite production build passed.
-* Aggregate coverage: statements **86.49%**, branches **84.82%**, functions **88.44%**, lines **87.38%**.
-* npm audit reported 0 vulnerabilities in that run.
-* Backend production source compilation completed, but test compilation failed. The Jackson tests and full-stack verification were not successfully executed.
+## Evidence A: supplied real CI for 0.2.1
 
-These observations replace the former uncertainty about whether the supplied React component suite could run at all. They are not results of a 0.2.1 rerun. Frontend source, tests, tooling configuration, and dependency selections are unchanged by this patch; only the package's release version changes.
+| Check | Result |
+|---|---|
+| Domain | 306 passed |
+| Server unit/configuration | 138 passed |
+| PostgreSQL integration | 47 passed |
+| Backend total / Maven build | 491 passed / BUILD SUCCESS |
+| Frontend unit/component tests | 224 passed (92 core + 132 components) |
+| TypeScript and production frontend build | Passed |
+| Aggregate frontend coverage | 87.38% lines, 84.82% branches, 88.44% functions, 86.49% statements |
+| Real-browser E2E | 12 passed, 2 failed |
 
-### 2. Executed locally again for 0.2.1
+These are observed results for **0.2.1**, not a completed rerun of 0.2.2. Backend implementation and tests are unchanged in this patch; release metadata is updated. The uploaded log does not contain the backend percentage report or the failed screenshot/trace contents. The administration cause is locally reproduced and consistent with the timeout, not independently established from its missing trace.
+
+## Evidence B: executed locally for 0.2.2
 
 | Check | Result | Scope |
 |---|---|---|
-| Java domain policy/parser/file checks | 306/306 passed | JDK 21-compatible offline harness; not the Spring/JDK 25 build |
-| Client core tests | 92/92 passed | Local Node 22 strip-types harness; not the pinned Node 24 production toolchain |
-| Report-gate self-tests | 9/9 passed | Synthetic report fixtures only, never application results |
-| Documentation browser checks | 7/7 passed | System Chromium; English/German routing, search, mobile overflow and landing-page controls only |
-| Local TypeScript check | Passed | Installed compiler; not a substitute for the pinned production toolchain |
+| Domain checks | 306/306 passed | Offline JDK 21-compatible harness, not the JDK 25 Spring build |
+| Frontend core | 100/100 passed | Node 22 strip-types harness, not pinned Node 24 |
+| Evidence/report-gate tests | 9/9 passed | Synthetic test-report fixtures only |
+| Targeted browser regressions | 13/13 passed | Real Chromium DOM interactions, React 16 compatibility renderer and synthetic DemoApi |
+| Existing compatibility journeys | 17/17 passed | Standalone workflow/navigation/download scenarios; not production E2E |
+| Local TypeScript and JS/JSX syntax checks | Passed | Installed compiler and Node; JSX transpilation is not a production build |
 
-The archived local logs are `domain-local.log`, `frontend-local.log`, and `quality-gate-local.log`; documentation-only browser results are in `documentation-browser-0.2.1.json`. Final package checks are recorded in `package-validation.json` after packaging. No results are invented for unavailable dependencies.
+The thirteen targeted scenarios include ten viewport/language combinations plus member creation/relogin, independent persisted preferences, and controlled delayed logout. The original label lookup and offscreen sign-out defect were reproduced before patching. `scripts/test-ui-regressions.py` and its JSON report make this local scope explicit. The prior standalone browser result file is refreshed only after actually rerunning its script.
 
-### 3. Still requires the real networked environment
+Documentation browser checks and final archive verification are recorded separately in `documentation-browser-0.2.2.json` and `package-validation.json`. Local logs are included; no synthetic XML is placed into real application test reports.
 
-| Suite / gate | Declared cases or requirement | Current status |
-|---|---:|---|
-| Server unit/configuration suite | 138 (132 existing + 6 multipart regressions) | Not executed here |
-| PostgreSQL integration | 47 | Not executed here |
-| Real React component suite on 0.2.1 | 132 | Not rerun here; passed for unchanged component source in supplied 0.2.0 logs |
-| Real-application Playwright | 14 | Not executed here |
-| Complete Spring/JDK 25 build | Maven + pinned dependencies | Not executed here |
-| Backend measured coverage | JaCoCo | Unknown until full-stack execution |
+## Evidence C: next required networked run
 
-This authoring environment has no Maven, Docker, or PostgreSQL, has JDK 21 instead of JDK 25, and cannot resolve the Maven/npm registries. A source review and the official API hierarchy support the correction, but are not a compiler or runtime test. **The six new Spring regressions and the complete corrected build must pass CI before release.**
+Declared suites now contain **306 domain + 138 server unit/configuration + 47 PostgreSQL integration + 100 client-core + 140 React component + 25 real-server browser cases**. The newly added eight component cases and eleven server-browser journeys have not been executed on the pinned production stack here. No new 0.2.2 coverage percentage is claimed.
 
-The earlier 17 compatibility-browser checks are historical evidence for the standalone showcase; they have not been rerun for this repair and are not real-server tests. Their historical JSON artifacts remain labelled as compatibility evidence.
+This authoring environment has no Maven, Docker or PostgreSQL; it supplies JDK 21/Node 22 and cannot resolve dependency registries. The full Spring/PostgreSQL/React 19 build must still be executed in CI. A locally reproduced UI repair is not a substitute for that release check.
 
-## Reproduce the focused check
+## Run the full gate
 
-From the repository root, with JDK 25 and registry access:
+From the repository root on Windows:
 
-```bash
-./mvnw --batch-mode --no-transfer-progress test-compile
-./mvnw --batch-mode --no-transfer-progress -Dtest=JacksonConfigurationTest,MultipartRequestBuilderTest -Dsurefire.failIfNoSpecifiedTests=false test
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\verify-all.ps1
 ```
 
-The selector's `surefire.failIfNoSpecifiedTests=false` permits the domain module (which has neither selected class) to participate in the reactor; it does not suppress failed tests or compilation errors. Do not use `maven.test.skip=true` as a workaround.
+Or with Docker Compose:
 
-For all layers, use the documented `compose.quality.yml` or `scripts/verify-all.ps1` route with a disposable database, then inspect the uploaded `full-stack-verification` artifacts.
+```bash
+docker compose -f compose.quality.yml up --build --abort-on-container-exit --exit-code-from verifier
+```
 
-## Data and release safety
+For a focused browser rerun against a running disposable test deployment:
 
-No Flyway migration, invoice business rule, or authorization rule changed. Preserve the existing database volume and deployment secrets. Keep intentional repository changes and any existing reviewed `frontend/package-lock.json`; its top-level package version should be updated to 0.2.1 without unnecessarily re-resolving dependencies. Re-run with `npm ci` after committing the lockfile.
+```bash
+cd frontend
+npm run test:e2e -- tests/e2e/modules.spec.js tests/e2e/responsive-auth.spec.js
+```
 
-Manual security/accessibility/privacy review, TLS/secrets configuration, restore verification, accountant handoff review, and dependency/license review remain release requirements. No DATEV integration or legal certification is claimed.
+The focused rerun includes other module tests in `modules.spec.js`; it does not replace the full gate. Commit and push the corrected source to obtain a run on the new commit. Preserve `.env`, database volumes, intentional changes and an existing reviewed lockfile. Only package-version metadata should change in that lockfile; do not re-resolve dependency versions unnecessarily.
+
+## Release safety
+
+No Flyway migration, invoice workflow rule or server authorization changed. No data reset is needed. No live DATEV integration or compliance certification is claimed. Security/accessibility/privacy review, dependencies/licenses, production TLS/secrets, restore tests and accounting-handoff acceptance remain release requirements.
 
 ## Zusammenfassung auf Deutsch
 
-Der neue Fehler liegt im Testcode: `pdf(String)` muss `MockMultipartHttpServletRequestBuilder` zurückgeben. Der Jackson-Test wurde im hochgeladenen Lauf wegen des vorherigen Kompilierungsfehlers nicht ausgeführt. Der Frontend-Lauf war erfolgreich: 224 Tests, TypeScript-Prüfung und Produktions-Build; die gemessene Zeilen-Coverage beträgt 87,38 %. Diese Werte stammen aus dem bereitgestellten 0.2.0-Protokoll, nicht aus einem vollständigen 0.2.1-Lauf.
-
-Lokal wurden für 0.2.1 erneut 306 Domänenfälle, 92 Client-Kerntests und 9 Berichtskontrollen ausgeführt. Die sechs neuen Multipart-Tests sowie der vollständige Spring-/PostgreSQL-/Browser-Lauf bleiben bis zur CI-Ausführung offen. Es ist keine Datenbankmigration und kein Zurücksetzen der Daten erforderlich.
+Die neue Revision korrigiert die Erreichbarkeit der Abmeldung, die exakten Formularbeschriftungen und ein zusätzliches Rennen beim Sitzungswechsel. Der bereitgestellte 0.2.1-Lauf bestätigt 491 Backend- und 224 Frontend-Fälle; zwei von 14 Browser-Journeys scheiterten. Für 0.2.2 wurden lokal 306 Domänen-, 100 Client-, neun Berichtstests sowie 13 gezielte und 17 bisherige Kompatibilitätsszenarien ausgeführt. Der vollständige Lauf mit 140 React-Komponentenfällen und 25 echten Server-Browser-Journeys bleibt bis zur CI offen. Die Kompatibilitätsvorschau verwendet synthetische Daten und ersetzt diese Prüfung nicht. Keine Datenbankmigration oder Datenlöschung erforderlich.

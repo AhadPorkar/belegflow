@@ -52,7 +52,10 @@ export class HttpApi implements Api {
         await this.csrf();
         return this.get<Session>('/session');
     }
-    async logout(): Promise<void> { await this.send('POST', '/logout'); this.token = null; }
+    async logout(): Promise<void> {
+        try { await this.send('POST', '/logout'); }
+        finally { this.token = null; }
+    }
     async download(path: string, filename?: string): Promise<void> {
         let r: Response;
         try {

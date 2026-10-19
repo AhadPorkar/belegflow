@@ -55,7 +55,18 @@ export function Empty({ icon = 'inbox', title, body, children }) {
 <h3>{title}</h3>{body && <p>{body}</p>}{children}</div>;
 }
 
-export function Field({ label, children, hint, className = '' }) {
+/** A single labelled control. Pass a page-unique id for an explicit label and hint relationship. */
+export function Field({ label, children, hint, className = '', id }) {
+    if (id) {
+        const control = React.Children.only(children);
+        const hintId = hint ? id + '-hint' : undefined;
+        const describedBy = [control.props['aria-describedby'], hintId].filter(Boolean).join(' ') || undefined;
+        return <div className={'field ' + className}>
+<label className="field-label" htmlFor={id}>{label}</label>
+{React.cloneElement(control, { id, 'aria-describedby': describedBy })}
+{hint && <span className="field-hint" id={hintId}>{hint}</span>}
+</div>;
+    }
     return <label className={'field ' + className}>
 <span className="field-label">{label}</span>{children}{hint && <span className="field-hint">{hint}</span>}</label>;
 }

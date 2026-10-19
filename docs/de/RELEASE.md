@@ -1,6 +1,6 @@
 # Freigabekriterien und kommerzielle Grenze
 
-Version 0.2.1 ist ein Entwicklungs-/Quellcodekandidat. Die folgenden Kriterien sind offen; es werden keine bestandenen Builds erfunden.
+Version 0.2.2 ist ein Entwicklungs-/Quellcodekandidat. Die folgenden Kriterien sind offen; es werden keine bestandenen Builds erfunden.
 
 | Kriterium | Erforderlicher Nachweis vor Kundendaten |
 |---|---|

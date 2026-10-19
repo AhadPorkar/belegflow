@@ -1,6 +1,6 @@
 # BelegFlow user guide
 
-Version 0.2.1 | [Deutsch](../de/USER_GUIDE.md)
+Version 0.2.2 | [Deutsch](../de/USER_GUIDE.md)
 
 ## 1. Understand the three decisions
 
@@ -137,3 +137,9 @@ In the isolated demo, locate the Reviewed `KE-2026-1048` (a separate duplicate a
 For a high-value example, `HIT-26041` already has a first approval in the server fixture. A different administrator can provide the second. To test refusal, a Viewer must not gain mutation rights by changing a URL or replaying an API request. Use only the disposable test instance for such checks.
 
 For build/startup problems rather than invoice handling, read [Troubleshooting](TROUBLESHOOTING.md). For automated validation, read [Testing](TESTING.md).
+
+## 17. Signing out and switching users
+
+On wide screens, use Sign out at the bottom of the sidebar; scroll inside the sidebar on a short screen. On tablets and phones, use the sign-out icon in the top bar. Private workspace data clears immediately. Wait until the login button is enabled before signing in as another user. A reported network error means server logout could not be confirmed; do not treat it as a successful server-side termination.
+
+In Workspace settings, Interface language and Number and date formatting remain separate controls. German numeric display does not alter stored invoice amounts or the approval threshold. Settings labels and keyboard focus remain usable in both languages.

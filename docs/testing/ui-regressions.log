@@ -1,0 +1,14 @@
+PASS 1440x900 en: exact preference label, reachable sign-out, fresh read-only login
+PASS 1440x900 de: exact preference label, reachable sign-out, fresh read-only login
+PASS 1280x560 en: exact preference label, reachable sign-out, fresh read-only login
+PASS 1280x560 de: exact preference label, reachable sign-out, fresh read-only login
+PASS 1024x768 en: exact preference label, reachable sign-out, fresh read-only login
+PASS 1024x768 de: exact preference label, reachable sign-out, fresh read-only login
+PASS 390x844 en: exact preference label, reachable sign-out, fresh read-only login
+PASS 390x844 de: exact preference label, reachable sign-out, fresh read-only login
+PASS 844x390 en: exact preference label, reachable sign-out, fresh read-only login
+PASS 844x390 de: exact preference label, reachable sign-out, fresh read-only login
+PASS Administration: create viewer and switch identity through normal controls at 1280x720
+PASS Rules: threshold and number preference survive language switches and re-bootstrap independently
+PASS Delayed synthetic logout: private content clears and login waits for termination
+TOTAL 13

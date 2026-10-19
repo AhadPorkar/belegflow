@@ -1,6 +1,6 @@
 # BelegFlow Benutzerhandbuch
 
-Version 0.2.1 | [English](../en/USER_GUIDE.md)
+Version 0.2.2 | [English](../en/USER_GUIDE.md)
 
 ## 1. Drei getrennte Entscheidungen
 
@@ -137,3 +137,9 @@ In der isolierten Demo die geprüfte `KE-2026-1048` wählen; es existiert auch e
 `HIT-26041` besitzt im Server-Testbestand bereits eine erste Freigabe. Eine andere administrative Person kann die zweite erteilen. Ein Viewer darf durch URL-Wechsel oder wiederholte API-Requests keine Schreibrechte erhalten. Solche Negativprüfungen nur in der wegwerfbaren Testinstanz ausführen.
 
 Für Build-/Startprobleme [Fehlerdiagnose](TROUBLESHOOTING.md), für automatisierte Prüfung [Tests](TESTING.md) lesen.
+
+## 17. Abmelden und Benutzer wechseln
+
+Bei breiten Fenstern befindet sich Abmelden unten in der Seitenleiste. In niedrigen Fenstern innerhalb dieser Leiste scrollen. Auf Tablets und Mobilgeräten das Abmeldesymbol in der Kopfzeile verwenden. Vertrauliche Daten werden sofort entfernt. Erst nach Aktivierung der Anmeldeschaltfläche erneut anmelden. Ein angezeigter Netzwerkfehler bedeutet, dass die serverseitige Abmeldung nicht bestätigt werden konnte.
+
+In den Einstellungen bleiben Oberflächensprache und Zahlen-/Datumsformat getrennt. Deutsche Formatierung verändert keine gespeicherten Rechnungswerte oder Freigabegrenzen. Beide Sprachen besitzen zugeordnete Beschriftungen und nutzbare Tastaturfokussierung.

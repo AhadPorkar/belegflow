@@ -1,0 +1,22 @@
+{
+  "scope": "Original 0.2.1 standalone UI plus controlled delayed logout; not production backend.",
+  "exact_format_label_matches": 0,
+  "labels": [
+    "Second-approval threshold (EUR)Applied when an invoice is sent for approval. Existing approvals keep their recorded rule.",
+    "Interface languageEnglishDeutsch",
+    "Number and date formatting1,234.56 \u00b7 18 Oct 20261.234,56 \u00b7 18.10.2026"
+  ],
+  "member_dialog_closed": true,
+  "member_exists": true,
+  "sign_out_bounds": {
+    "x": 156,
+    "y": 916.03125,
+    "width": 24,
+    "height": 32
+  },
+  "sign_out_below_viewport": true,
+  "sidebar_overflow_y": "visible",
+  "login_screen_visible_while_logout_pending": true,
+  "login_enabled_while_logout_pending": true,
+  "navigation_before_logout_completed_restored_identity": "admin@belegflow.demo"
+}

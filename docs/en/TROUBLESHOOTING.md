@@ -1,8 +1,21 @@
-# Troubleshooting and upgrading to 0.2.1
+# Troubleshooting and upgrading to 0.2.2
 
 [Deutsch](../de/TROUBLESHOOTING.md) | [Testing](TESTING.md) | [Operations](OPERATIONS.md)
 
-## New run 106020289651: multipart test compilation
+## Run 106036450086: backend green, two browser failures
+
+This is not another Jackson or multipart compilation failure. The supplied run passed 491 backend cases, all 47 PostgreSQL cases within that total, and 224 frontend cases. Twelve of fourteen real-browser journeys passed. The failed operations are in administration and preferences; see [CI analysis](../testing/CI-106036450086.md).
+
+**Administration:** a fixed sidebar without scrolling can place Sign out beyond the viewport. At tablet widths the sidebar and header previously both hid that control. The patch adds independent sidebar scrolling and a topbar fallback. Ordinary pointer and keyboard navigation must work; increasing the timeout or forcing the click is not the fix. The exact action from the failed CI trace was not present in the log archive, so the source defect is locally reproduced rather than inferred as the only possible failure.
+
+**Preferences:** `getByLabel('Number and date formatting', {exact:true})` could not find the control because its surrounding label also contained option text. The settings fields now use separate labels connected by `htmlFor`/`id`, and the threshold hint uses `aria-describedby`. EN/DE exact-label assertions remain in place.
+
+**Session handoff:** wait for server logout completion before a fresh login. Private content disappears immediately while the login form stays busy. A network failure is displayed; it is not proof that the server invalidated its session. The test helper waits for `/api/logout`, checks the unauthenticated session, and does not reload mid-request.
+
+Use a new commit containing 0.2.2, then run the full quality stack. Re-running the old workflow commit does not apply new files. Preserve existing data and settings; no schema migration, dependency downgrade or test deletion is required. PostgreSQL rejection messages in successful negative tests are expected, not a reason to reset the database.
+
+
+## Earlier run 106020289651: multipart test compilation
 
 This is **not a recurrence of the Jackson startup error**. Maven failed in `testCompile`, before the selected Jackson tests could run:
 
@@ -27,13 +40,13 @@ MockMultipartHttpServletRequestBuilder pdf(String number) {
 
 The multipart and ordinary builders are separate concrete types in the current Spring API. Shared fluent operations do not make one a subtype of the other. Do not add a cast, drop the multipart file, downgrade Spring, or disable test compilation.
 
-Version 0.2.1 adds `MultipartRequestBuilderTest` (six database-free cases) and splits the CI preflight into an explicit compile step followed by the Jackson/multipart regressions. All database and real-browser suites are retained.
+Version 0.2.1 added `MultipartRequestBuilderTest` (six database-free cases) and splits the CI preflight into an explicit compile step followed by the Jackson/multipart regressions. All database and real-browser suites are retained.
 
 The same uploaded run confirms **224 frontend tests passed**, along with type checking, production build and the npm audit gate. It reports **87.38% lines / 84.82% branches** for the frontend. The full-stack job had no successful execution because its backend prerequisite failed. See [the source-specific evidence](../testing/CI-106020289651.md).
 
 ### Apply the repair safely
 
-Replace or merge the contents of the ZIP's `belegflow/` folder into the existing repository root, not into a nested second folder. Keep your `.env`, deployment secrets, database volumes, intentional code changes and existing reviewed `frontend/package-lock.json`. The application metadata is now 0.2.1; update an existing lockfile's top-level package version accordingly. No dependency version was changed by this patch.
+Replace or merge the contents of the ZIP's `belegflow/` folder into the existing repository root, not into a nested second folder. Keep your `.env`, deployment secrets, database volumes, intentional code changes and existing reviewed `frontend/package-lock.json`. The application metadata is now 0.2.2; update an existing lockfile's top-level package version accordingly. No dependency version was changed by this patch.
 
 A rerun of the **old GitHub run** still tests the old commit. Commit and push the corrected files so a new run uses the repair, or select the corrected branch for a manual workflow dispatch.
 

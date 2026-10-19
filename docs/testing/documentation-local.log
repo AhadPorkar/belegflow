@@ -1,0 +1,8 @@
+PASS: English is default; twelve guides and one active article
+PASS: Current release and correctly scoped CI/local evidence
+PASS: Module navigation and German switch retain the selected guide
+PASS: Updated German search index opens a matching article
+PASS: Handbook fits a 390px viewport in both languages
+PASS: START-HERE language buttons switch actual content
+PASS: No uncaught browser errors in documentation interactions
+7 documentation scenarios passed.

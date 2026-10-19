@@ -9,6 +9,6 @@ test_skipped_case_fails (test_report_gate.ReportGateTest.test_skipped_case_fails
 test_too_few_cases_fail (test_report_gate.ReportGateTest.test_too_few_cases_fail) ... ok
 
 ----------------------------------------------------------------------
-Ran 9 tests in 0.004s
+Ran 9 tests in 0.005s
 
 OK

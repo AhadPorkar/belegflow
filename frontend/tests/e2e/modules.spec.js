@@ -1,24 +1,8 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 import {randomUUID} from 'node:crypto';
-const password='BelegFlow-Demo-2026!';
+import {login,loginOnScreen,signOut,api,demoPassword as password} from './helpers.js';
 const suffix=()=>randomUUID().slice(0,8);
-async function login(page,email='finance@belegflow.demo',secret=password){
- await page.goto('/');
- await page.locator('input[name=email]').fill(email);
- await page.locator('input[name=password]').fill(secret);
- await page.locator('.login-box button[type=submit]').click();
- await expect(page.locator('.workspace-grid')).toBeVisible();
- await page.getByRole('button',{name:'EN',exact:true}).click();
- await expect(page.locator('html')).toHaveAttribute('lang','en');
-}
-async function api(page,path,method='GET',body){
- return page.evaluate(async({path,method,body})=>{
-  const csrf=await fetch('/api/csrf').then(r=>r.json());
-  const response=await fetch('/api'+path,{method,headers:{'Content-Type':'application/json','X-CSRF-TOKEN':csrf.token},body:body===undefined?undefined:JSON.stringify(body)});
-  return {status:response.status,data:await response.json().catch(()=>null)};
- },{path,method,body});
-}
 async function nav(page,title){await page.locator('.sidebar').getByRole('button',{name:title,exact:true}).click();await expect(page.locator('.standard-page')).toBeVisible();}
 async function save(page){await page.locator('dialog button[type=submit]').click();await expect(page.locator('dialog')).toHaveCount(0);await expect(page.locator('.global-error')).toHaveCount(0);}
 async function row(page,number){await page.locator('#invoice-search').fill(number);const result=page.locator('.invoice-row').filter({hasText:number}).first();await expect(result).toBeVisible();await result.click();await expect(page.locator('.paper-title')).toContainText(number);}
@@ -84,8 +68,8 @@ test('administration module: create a viewer and verify its read-only interface'
  await page.getByRole('button',{name:'Add member',exact:true}).click();
  await page.locator('dialog input[name=display_name]').fill('E2E Viewer');await page.locator('dialog input[name=email]').fill(email);
  await page.locator('dialog select[name=role]').selectOption('VIEWER');await page.locator('dialog input[name=password]').fill(password);await save(page);
- await page.locator('.sidebar').getByRole('button',{name:'Sign out',exact:true}).click();await expect(page.locator('.login-box')).toBeVisible();
- await login(page,email);await expect(page.getByRole('button',{name:'Import invoice',exact:true})).toHaveCount(0);
+ await test.step('Finish server logout using the visible account control',async()=>{await signOut(page);});
+ await test.step('Sign in as the newly created viewer without reloading logout',async()=>{await loginOnScreen(page,email);});await expect(page.getByRole('button',{name:'Import invoice',exact:true})).toHaveCount(0);
  const list=(await api(page,'/invoices')).data;
  expect((await api(page,'/invoices/'+list.items[0].id+'/comments','POST',{body:'Forbidden'})).status).toBe(403);
 });
@@ -93,13 +77,24 @@ test('administration module: create a viewer and verify its read-only interface'
 test('rules module: persist threshold and keep display preferences separate',async({page})=>{
  await login(page,'admin@belegflow.demo');await nav(page,'Workspace settings');
  const previous=(await api(page,'/catalog')).data.threshold;
- await page.locator('input[name=threshold]').fill('10000.50');await page.locator('.settings-card form button[type=submit]').click();
- await expect.poll(async()=>(await api(page,'/catalog')).data.threshold).toBe('10000.50');
- await page.getByLabel('Number and date formatting',{exact:true}).selectOption('de-DE');
- await page.getByRole('button',{name:'DE',exact:true}).click();await expect(page.locator('html')).toHaveAttribute('lang','de');
- await page.getByRole('button',{name:'EN',exact:true}).click();
- expect((await api(page,'/catalog')).data.threshold).toBe('10000.50');
- expect((await api(page,'/settings/rules','PUT',{threshold:previous})).status).toBe(200);
+ try {
+  await page.getByLabel('Second-approval threshold (EUR)',{exact:true}).fill('10000.50');
+  await page.locator('.settings-card form button[type=submit]').click();
+  await expect.poll(async()=>(await api(page,'/catalog')).data.threshold).toBe('10000.50');
+  const format=page.getByLabel('Number and date formatting',{exact:true});
+  await expect(format).toHaveAccessibleName('Number and date formatting');
+  await format.selectOption('de-DE');await expect(format).toHaveValue('de-DE');
+  await page.getByRole('button',{name:'DE',exact:true}).click();
+  await expect(page.locator('html')).toHaveAttribute('lang','de');
+  await expect(page.getByLabel('Zahlen- und Datumsformat',{exact:true})).toHaveValue('de-DE');
+  await page.getByRole('button',{name:'EN',exact:true}).click();
+  await page.reload();await nav(page,'Workspace settings');
+  await expect(page.getByLabel('Number and date formatting',{exact:true})).toHaveValue('de-DE');
+  expect((await api(page,'/catalog')).data.threshold).toBe('10000.50');
+ } finally {
+  // A failed assertion must not leave a changed financial rule for the next scenario.
+  expect((await api(page,'/settings/rules','PUT',{threshold:previous})).status).toBe(200);
+ }
 });
 
 test('delegation module: create and revoke a bounded delegation',async({page})=>{

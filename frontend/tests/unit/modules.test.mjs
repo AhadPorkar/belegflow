@@ -60,3 +60,36 @@ test('navigation: page cannot become negative',async t=>{const{api,store}=await 
 test('navigation: latest filter response wins over a slow earlier response',async t=>{const{api,store}=await ready(t),p=deferred(),real=api.get.bind(api);api.get=path=>path.includes('stage=APPROVED')?p.promise:real(path);const slow=store.filter('APPROVED');await store.filter('REVIEWED');p.resolve({items:[],total:0});await slow;assert.equal(store.getSnapshot().stage,'REVIEWED');assert.equal(store.getSnapshot().invoices.length,1);});
 test('preferences: theme toggle and disposal are safe',async t=>{const{store}=await ready(t);store.toggleTheme();assert.equal(store.getSnapshot().theme,'dark');store.toggleTheme();assert.equal(store.getSnapshot().theme,'light');store.dispose();});
 test('dialog: closing discards file and error',async t=>{const{store}=await ready(t);store.openDialog('import');store.setDialogFile(new File(['a'],'invoice.xml'));store.patch({error:'INVALID_FILE'});store.closeDialog();assert.equal(store.getSnapshot().dialogFile,null);assert.equal(store.getSnapshot().error,null);});
+
+// Delayed authentication transport must never expose the old workspace or admit a competing login.
+test('identity: pending logout clears private data but keeps login busy until completion',async t=>{
+ const{api,store}=await ready(t),pending=deferred();api.logout=()=>pending.promise;
+ const done=store.logout();assert.equal(store.getSnapshot().me,null);assert.equal(store.getSnapshot().catalog.users.length,0);assert.equal(store.getSnapshot().busy,true);
+ pending.resolve();await done;assert.equal(store.getSnapshot().busy,false);assert.equal(store.getSnapshot().me,null);
+});
+test('identity: manual and demo login cannot race an unfinished logout',async t=>{
+ const{api,store}=await ready(t),pending=deferred();api.logout=()=>pending.promise;store.patch({demo:true});
+ const done=store.logout();await store.login('next@example.test','secret');await store.loginDemo('leon@belegflow.demo');
+ assert.equal(api.calls.filter(c=>c[0]==='LOGIN').length,0);pending.resolve();await done;
+ await store.login('next@example.test','secret');assert.equal(api.calls.filter(c=>c[0]==='LOGIN').length,1);
+});
+test('identity: duplicate logout calls share one pending termination',async t=>{
+ const{api,store}=await ready(t),pending=deferred();let calls=0;api.logout=()=>{calls++;return pending.promise;};
+ const first=store.logout();await store.logout();assert.equal(calls,1);assert.equal(store.getSnapshot().busy,true);
+ pending.resolve();await first;assert.equal(store.getSnapshot().busy,false);
+});
+test('identity: failed logout leaves data cleared and releases login with a visible error',async t=>{
+ const{api,store}=await ready(t);api.logout=async()=>{throw new ApiError('NETWORK_ERROR');};await store.logout();
+ assert.equal(store.getSnapshot().me,null);assert.equal(store.getSnapshot().invoices.length,0);assert.equal(store.getSnapshot().busy,false);assert.equal(store.getSnapshot().error,'NETWORK_ERROR');
+ await store.login('next@example.test','secret');assert.equal(store.getSnapshot().me.id,api.me.id);
+});
+test('identity: expired-session logout cannot leave the pending-login guard stuck',async t=>{
+ const{api,store}=await ready(t);api.logout=async()=>{throw new ApiError('AUTH_REQUIRED',401);};await store.logout();
+ assert.equal(store.getSnapshot().busy,false);await store.login('next@example.test','secret');assert.equal(store.getSnapshot().me.id,api.me.id);
+});
+test('identity: an old login response cannot unlock a later pending logout',async t=>{
+ const{api,store}=await ready(t),auth=deferred(),termination=deferred();api.login=()=>auth.promise;api.logout=()=>termination.promise;
+ const login=store.login('next@example.test','secret');const logout=store.logout();auth.resolve(api.me);await login;
+ assert.equal(store.getSnapshot().me,null);assert.equal(store.getSnapshot().busy,true);
+ termination.resolve();await logout;assert.equal(store.getSnapshot().busy,false);
+});
